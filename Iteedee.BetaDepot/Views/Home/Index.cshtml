@@ -1,0 +1,356 @@
+﻿@using Iteedee.BetaDepot.Models
+@using Iteedee.BetaDepot.Common
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Beta Depot</h1>
+    <p class="lead">All your beta testing and app distribution in one place.</p>
+    @if(User.Identity.IsAuthenticated)
+    {
+        <p><a id="btnUploadBuild" class="btn btn-primary btn-large">Upload a Build</a></p>
+    }
+    else
+    {
+        <div class="row">
+                <ul class="list-inline">
+                    <li><a href="~/Account/Login" class="btn btn-primary btn-large">Login</a></li>
+                    <li>Or</li>
+                    <li><a href="~/Account/Register" class="btn btn-primary btn-large">Register</a></li>
+                </ul>  
+        </div>                                                                           
+    }
+</div>
+<div class="row">
+    <div class="span12 pull-right" style="text-align:right">
+        <a href="~/ManageApp" class="btn btn-danger btn-large">Manage Apps</a>
+    </div>
+
+</div>
+
+<div class="row">
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (Model == null)
+            {
+                <h2>PICK A Platform up top or upload a build.</h2>
+            }
+            else
+            {
+                <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                    <li class="active"><a href="#tbDevelopment" data-toggle="tab">Development</a></li>
+                    <li><a href="#tbTest" data-toggle="tab">Test</a></li>
+                    <li><a href="#tbProduction" data-toggle="tab">Production</a></li>
+                </ul>
+                <div id="my-tab-content" class="tab-content">
+                    <div class="tab-pane active" id="tbDevelopment">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Build Name</th>
+                                    <th>Added Date</th>
+                                    <th>Download</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (((IEnumerable<ApplicationBuildSummaryModel>)Model.ApplicationBuilds)
+                        .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT)
+                        .ToList()
+                        .Count() == 0)
+                                {
+                                    <tr>
+                                        <td colspan="3">No Builds found</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (Iteedee.BetaDepot.Models.ApplicationBuildSummaryModel b in Model.ApplicationBuilds)
+                                    {
+                                        if (b.Environment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT)
+                                        {
+                                            <tr>
+                                                <td>@b.AppName</td>
+                                                <td>@b.UploadedDtm</td>
+                                                <td><a href="@b.InstallUrl" class="btn btn-primary">Install</a></td>
+                                            </tr>
+                                            <tr>
+
+                                                <td colspan="3">
+                                                    <strong>BuildNotes:</strong>
+
+                                                    <blockquote>
+                                                        <footer>@b.BuildNotes</footer>
+                                                    </blockquote>
+                                                </td>
+
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                    <div class="tab-pane" id="tbTest">
+
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Build Name</th>
+                                    <th>Added Date</th>
+                                    <th>Download</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (((IEnumerable<ApplicationBuildSummaryModel>)Model.ApplicationBuilds)
+                        .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_TEST)
+                        .ToList()
+                        .Count() == 0)
+                                {
+                                    <tr>
+                                        <td colspan="3">No Builds found</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (Iteedee.BetaDepot.Models.ApplicationBuildSummaryModel b in Model.ApplicationBuilds)
+                                    {
+                                        if (b.Environment == Constants.BUILD_ENVIRONMENT_TEST)
+                                        {
+                                            <tr>
+                                                <td>@b.AppName</td>
+                                                <td>@b.UploadedDtm</td>
+                                                <td><a href="@b.InstallUrl" class="btn btn-primary">Install</a></td>
+                                            </tr>
+                                            <tr>
+
+                                                <td colspan="3">
+                                                    <blockquote>
+                                                        <footer>@b.BuildNotes</footer>
+                                                    </blockquote>
+                                                </td>
+
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane" id="tbProduction">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Build Name</th>
+                                    <th>Added Date</th>
+                                    <th>Download</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (((IEnumerable<ApplicationBuildSummaryModel>)Model.ApplicationBuilds)
+                        .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_PRODUCTION)
+                        .ToList()
+                        .Count() == 0)
+                                {
+                                    <tr>
+                                        <td colspan="3">No Builds found</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (Iteedee.BetaDepot.Models.ApplicationBuildSummaryModel b in Model.ApplicationBuilds)
+                                    {
+                                        if (b.Environment == Constants.BUILD_ENVIRONMENT_PRODUCTION)
+                                        {
+                                            <tr>
+                                                <td>@b.AppName</td>
+                                                <td>@b.UploadedDtm</td>
+                                                <td><a href="@b.InstallUrl" class="btn btn-primary">Install</a></td>
+                                            </tr>
+                                            <tr>
+
+                                                <td colspan="3">
+                                                    <blockquote>
+                                                        <footer>@b.BuildNotes</footer>
+                                                    </blockquote>
+                                                </td>
+
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+        }
+
+    </div>
+<div id="modalUploadBuild" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Upload Build</h4>
+                </div>
+                <form id="frmUploadBuild" action="~/App/SaveBuild" method="post">
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <span class="btn btn-success fileinput-button">
+                                <i class="glyphicon glyphicon-plus"></i>
+                                <span>Select APK/IPA...</span>
+                                <!-- The file input field used as target for the file upload widget -->
+                                <input name="files" id="fileupload" type="file">
+                            </span>
+                            <input type="hidden" class="form-control" id="txtFileName" name="FileName" placeholder="">
+                        </div>
+                        <div class="form-group">
+
+                            <label>Progress:</label>
+                            <div id="progress" class="progress progress-striped">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                    0% Complete
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div id="pnlUploadFileInfo" hidden>
+                            <div class="form-group">
+                                <label class="control-label">Name:</label>
+                                <div class="controls">
+                                    <label id="lblAppName" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">App Identifier:</label>
+                                <div class="controls">
+                                    <label id="lblPackageName" />
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Version:</label>
+                                <div class="controls">
+                                    <label id="lblVersionName" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="cbxEnvironment">Environment:</label>
+                            <select name="EnvironmentId" id="cbxEnvironment" class="form-control" required>
+                                <option value="" selected>-SELECT-</option>
+                                @foreach (Iteedee.BetaDepot.Models.Environments env in Model.UploadForm.Environments)
+                                {
+                                    <option value="@env.EnvironmentId">@env.EnvironmentName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword">Build Notes:</label>
+                            <textarea id="txtBuildNotes" name="BuildNotes" class="form-control" rows="5" placeholder="" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnCancelBuild" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button id="btnSaveChanges" type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var init = function () {
+
+                };
+
+                $("#btnUploadBuild").click(function () {
+                    $("#modalUploadBuild").modal('show');
+                });
+
+                //File UPload
+                $(document).on('change', '.btn-file :file', function () {
+                    var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                    input.trigger('fileselect', [numFiles, label]);
+                });
+                $('#fileupload').fileupload({
+                    dataType: 'json',
+                    url: '@Url.Action("Upload", "App")',
+                    start: function (e) {
+                        $("#progress").addClass("active");
+                    },
+                    done: function (e, data) {
+                        $("#progress").removeClass("active");
+                        $('#progress .progress-bar').text("File Uploaded!")
+                        $.each(data.result, function (index, file) {
+                            $('<p/>').text(file.name).appendTo(document.body);
+                        });
+                        //data.result
+                        if (data.result.Status == "OK") {
+                            $("#pnlUploadFileInfo").removeAttr("hidden");
+                            $("#txtFileName").val(data.result.FileName);
+                            $("#lblPackageName").text(data.result.PackageName);
+                            $("#lblVersionName").text(data.result.VersionName);
+                            $("#lblAppName").text(data.result.AppName);
+
+                        }
+                        else {
+                            $("#pnlUploadFileInfo").attr("hidden");
+                            alert(data.result.Message);
+                        }
+
+                    },
+                    progressall: function (e, data) {
+
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        $('#progress .progress-bar').text(progress + "%")
+                        $('#progress .progress-bar').css(
+                            'width',
+                            progress + '%'
+                        );
+                        //$("#hdFileName").val(data);
+
+                    }
+                });
+                $("#frmUploadBuild").submit(function () {
+                    if ($("#txtFileName").val().length == 0) {
+                        alert("You must select and upload a build file.");
+                        return false;
+                    }
+                    return true;
+
+                });
+                $("#btnCancelBuild").click(function () {
+
+
+                    resetForm();
+                    //$("#modalUploadBuild").modal('hide');
+
+                });
+
+                var resetForm = function () {
+                    $("#txtFileName").val("");
+                    $("#lblPackageName").text("");
+                    $("#lblVersionName").text("");
+                    $("#lblAppName").text("");
+                    $("#txtBuildNotes").val("");
+                    $("#cbxEnvironment").val("");
+                    $("#pnlUploadFileInfo").attr("hidden");
+
+                    $('#progress .progress-bar').css('width', '0%');
+                };
+
+                init();
+            });
+        </script>
+    }

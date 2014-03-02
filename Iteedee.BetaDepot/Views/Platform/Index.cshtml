@@ -1,0 +1,198 @@
+﻿@using Iteedee.BetaDepot.Models
+@using Iteedee.BetaDepot.Common
+@{
+    ViewBag.Title = "Platforms";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <div class="jumbotron">
+        <h1>Beta Depot</h1>
+    </div>
+
+    <div class="row">
+        @if (User.Identity.IsAuthenticated)
+        {
+                <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                    <li class="active"><a href="#tbDevelopment" data-toggle="tab">Development</a></li>
+                    <li><a href="#tbTest" data-toggle="tab">Test</a></li>
+                    <li><a href="#tbProduction" data-toggle="tab">Production</a></li>
+                </ul>
+                <div id="my-tab-content" class="tab-content">
+                    <div class="tab-pane active" id="tbDevelopment">
+
+                        <div class="col-lg-4">
+                            <div class="bs-component">
+
+
+                            </div>
+                        </div>
+                                @if (((IEnumerable<PlatformViewModel.PlatformBuildDetail>)Model.Applications)
+                        .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT)
+                        .ToList()
+                        .Count() == 0)
+                                {
+                                        <h4>No Builds found</h4>
+                                }
+                                else
+                                {
+                                    foreach (Iteedee.BetaDepot.Models.PlatformViewModel.PlatformBuildDetail b in Model.Applications)
+                                    {
+                                        if (b.Environment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT)
+                                        {
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title">@b.AppName</h3>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="col-lg-2">
+                                                        <img src="@b.AppIconUrl" alt="@b.AppName" />
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <div class="row">
+                                                            <div class="row">
+                                                                <div>
+                                                                    <h4>Latest Build : Version <strong>@b.VersionNumber</strong></h4>
+                                                                    <small>Latest Build Added by <strong>@b.UploadedByName | @b.UploadedDtm</strong></small> 
+                                                                </div>
+                                                            </div>
+                                                            <div class="row" style="padding:10px;">
+                                                                <strong>Notes:</strong>
+                                                                <div>
+                                                                    <small>
+                                                                        @b.BuildNotes
+                                                                    </small>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <div style="padding:5px;">
+                                                            <a href="@b.InstallUrl" class="btn btn-primary">Install</a>
+                                                        </div>
+                                                        <div style="padding:5px;">
+                                                            <a href="#" class="btn btn-info">Previous Builds</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                }
+                    </div>
+                    <div class="tab-pane" id="tbTest">
+
+                                @if (((IEnumerable<PlatformViewModel.PlatformBuildDetail>)Model.Applications)
+                        .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_TEST)
+                        .ToList()
+                        .Count() == 0)
+                                {
+                                    <span>No Builds found</span>
+                                }
+                                else
+                                {
+                                    foreach (PlatformViewModel.PlatformBuildDetail b in Model.Applications)
+                                    {
+                                        if (b.Environment == Constants.BUILD_ENVIRONMENT_TEST)
+                                        {
+                                             <div class="panel panel-info">
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title">@b.AppName</h3>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="col-lg-2">
+                                                        <img src="@b.AppIconUrl" alt="@b.AppName" />
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <div class="row">
+                                                            <div class="row">
+                                                                <div>
+                                                                    <h4>Latest Build : Version <strong>@b.VersionNumber</strong></h4>
+                                                                    <small>Latest Build Added by <strong>@b.UploadedByName | @b.UploadedDtm</strong></small> 
+                                                                </div>
+                                                            </div>
+                                                            <div class="row" style="padding:10px;">
+                                                                <strong>Notes:</strong>
+                                                                <div>
+                                                                    <small>
+                                                                        @b.BuildNotes
+                                                                    </small>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <div style="padding:5px;">
+                                                            <a href="@b.InstallUrl" class="btn btn-primary">Install</a>
+                                                        </div>
+                                                        <div style="padding:5px;">
+                                                            <a href="#" class="btn btn-info">Previous Builds</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                }
+                    </div>
+                    <div class="tab-pane" id="tbProduction">
+                                @if (((IEnumerable<PlatformViewModel.PlatformBuildDetail>)Model.Applications)
+                        .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_PRODUCTION)
+                        .ToList()
+                        .Count() == 0)
+                                {
+                                    <span> Builds found</span>
+                                }
+                                else
+                                {
+                                    foreach (PlatformViewModel.PlatformBuildDetail b in Model.Applications)
+                                    {
+                                        if (b.Environment == Constants.BUILD_ENVIRONMENT_PRODUCTION)
+                                        {
+                                               <div class="panel panel-info">
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title">@b.AppName</h3>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="col-lg-2">
+                                                        <img src="@b.AppIconUrl" alt="@b.AppName" />
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <div class="row">
+                                                            <div class="row">
+                                                                <div>
+                                                                    <h4>Latest Build : Version <strong>@b.VersionNumber</strong></h4>
+                                                                    <small>Latest Build Added by <strong>@b.UploadedByName | @b.UploadedDtm</strong></small> 
+                                                                </div>
+                                                            </div>
+                                                            <div class="row" style="padding:10px;">
+                                                                <strong>Notes:</strong>
+                                                                <div>
+                                                                    <small>
+                                                                        @b.BuildNotes
+                                                                    </small>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <div style="padding:5px;">
+                                                            <a href="@b.InstallUrl" class="btn btn-primary">Install</a>
+                                                        </div>
+                                                        <div style="padding:5px;">
+                                                            <a href="#" class="btn btn-info">Previous Builds</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                }
+                    </div>
+                </div>
+
+        }
+
+    </div>
+

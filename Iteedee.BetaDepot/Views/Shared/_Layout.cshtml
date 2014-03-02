@@ -23,8 +23,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("iOS", "Platform", "Home", new { platform = Constants.BUILD_PLATFORM_IOS }, null)</li>
-                    <li>@Html.ActionLink("Android", "Platform", "Home", new { platform = Constants.BUILD_PLATFORM_ANDROID }, null)</li>
+                    <li>@Html.ActionLink("iOS", "Index", "Platform", new { platform = Constants.BUILD_PLATFORM_IOS }, null)</li>
+                    <li>@Html.ActionLink("Android", "Index", "Platform", new { platform = Constants.BUILD_PLATFORM_ANDROID }, null)</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")

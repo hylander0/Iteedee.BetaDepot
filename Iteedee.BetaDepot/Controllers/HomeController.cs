@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Iteedee.BetaDepot.Common;
 using Iteedee.BetaDepot.Repository;
+using System.Net;
 
 namespace Iteedee.BetaDepot.Controllers
 {
@@ -99,10 +100,15 @@ namespace Iteedee.BetaDepot.Controllers
             }
             return View(summary);
         }
+
         private string BaseUrl()
         {
             //return string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
-            return string.Format("{0}://{1}{2}", Request.Url.Scheme, "JustinHyland-PC.na.awwweb.com", Url.Content("~"));
+            //return string.Format("{0}://{1}{2}", Request.Url.Scheme, "JustinHyland-PC.na.awwweb.com", Url.Content("~"));
+            if (Request.Url.Port == 80)
+                return string.Format("{0}://{1}{2}", Request.Url.Scheme, "localhost", Url.Content("~"));
+            else
+                return string.Format("{0}://{1}:{2}{3}", Request.Url.Scheme, "localhost", Request.Url.Port, Url.Content("~"));
         }
         public ActionResult About()
         {

@@ -92,15 +92,18 @@ namespace Iteedee.BetaDepot.Repository.Managers
             {
                 var latestBuilds = (from b in context.Builds
                                  where (b.Application == context.Applications.Where(w => w.Id == appId).FirstOrDefault())
-                                         && (b.Platform == platform)
-                                 group b by b.Id into g
-                                 select new { buildId = g.Key, Date = g.Max(t => t.AddedDtm) }).ToList();
+                                         && (b.Platform == platform) && (b.Environment.EnvironmentName == Common.Constants.BUILD_ENVIRONMENT_DEVELOPMENT)
+                                    group b by new { b.Application.Id } into g
+                                 select new { AppId = g.Key.Id, Date = g.Max(t => t.AddedDtm) }).ToList();
+
+                Console.Write(latestBuilds.Count());
 
                 var join = from l in latestBuilds
                            join b in context.Builds.Include("Environment")
                                                     .Include("Application")
                                                     .Include("AddedBy")
-                                on l.buildId equals b.Id
+                                on l.AppId equals b.Application.Id
+                                where l.Date == b.AddedDtm
                            select b;
 
                 retval = join.ToList();

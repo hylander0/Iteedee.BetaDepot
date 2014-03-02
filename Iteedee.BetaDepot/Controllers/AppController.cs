@@ -30,7 +30,7 @@ namespace Iteedee.BetaDepot.Controllers
 
                 string xml = Platforms.iOS.iOSBundle.GenerateBundlesSoftwarePackagePlist(
                     ipaFilePath,
-                   string.Format("{0}Home/Download?FileName={1}", BaseUrl(), ipaFileName));
+                   string.Format("{0}App/Download?FileName={1}", BaseUrl(), ipaFileName));
 
                 var bytes = Encoding.UTF8.GetBytes(xml);
                 var result = new FileContentResult(bytes, System.Net.Mime.MediaTypeNames.Text.Xml);
@@ -46,22 +46,29 @@ namespace Iteedee.BetaDepot.Controllers
             }
 
         }
+        [HttpGet]
+        [ActionName("AppIconImage")]
+        public FileResult AppIconImage(string AppUniqueIdentifier)
+        {
+            string filePath = Path.Combine(Server.MapPath("~/App_Data/Files/Icons"), AppUniqueIdentifier + ".png");
+            if(!System.IO.File.Exists(filePath))
+                filePath = Path.Combine(Server.MapPath("~/App_Data/Files"), AppUniqueIdentifier + ".jpg");
+            if (!System.IO.File.Exists(filePath))
+                return null;
 
-        //public FileResult GetAppIconImage(string AppUniqueIdentifier)
-        //{
-
-
-        //    string filePath = Path.Combine(Server.MapPath("~/App_Data/Files"), FileName);
-        //    //Return actual file
-        //    byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-        //    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, FileName);
-        //}
+            
+            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Image.Jpeg, filePath);
+        }
 
         private string BaseUrl()
         {
             //return string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
             //return string.Format("{0}://{1}{2}", Request.Url.Scheme, "JustinHyland-PC.na.awwweb.com", Url.Content("~"));
-            return string.Format("{0}://{1}{2}", Request.Url.Scheme, Dns.GetHostEntry("localhost").HostName, Url.Content("~"));
+            if (Request.Url.Port == 80)
+                return string.Format("{0}://{1}{2}", Request.Url.Scheme, "localhost", Url.Content("~"));
+            else
+                return string.Format("{0}://{1}:{2}{3}", Request.Url.Scheme, "localhost", Request.Url.Port, Url.Content("~"));
         }
         [HttpPost]
         [ActionName("SaveBuild")]

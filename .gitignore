@@ -48,6 +48,9 @@ TestResult.xml
 *.pidb
 *.svclog
 *.scc
+*.apk
+*.ipa
+
 
 # Chutzpah Test files
 _Chutzpah*
@@ -158,8 +161,9 @@ UpgradeLog*.XML
 UpgradeLog*.htm
 
 # SQL Server files
-App_Data/*.mdf
-App_Data/*.ldf
+Iteedee.BetaDepot/App_Data/*.mdf
+Iteedee.BetaDepot/App_Data/*.ldf
+Iteedee.BetaDepot/App_Data/Files/Icons/*
 
 # Business Intelligence projects
 *.rdl.data

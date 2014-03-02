@@ -38,153 +38,43 @@
             }
             else
             {
-                <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                    <li class="active"><a href="#tbDevelopment" data-toggle="tab">Development</a></li>
-                    <li><a href="#tbTest" data-toggle="tab">Test</a></li>
-                    <li><a href="#tbProduction" data-toggle="tab">Production</a></li>
-                </ul>
-                <div id="my-tab-content" class="tab-content">
-                    <div class="tab-pane active" id="tbDevelopment">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Build Name</th>
-                                    <th>Added Date</th>
-                                    <th>Download</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (((IEnumerable<ApplicationBuildSummaryModel>)Model.ApplicationBuilds)
-                        .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT)
-                        .ToList()
-                        .Count() == 0)
-                                {
+
+                <table class="table">
+                    <tbody>
+                        @if (((IEnumerable<ApplicationBuildSummaryModel>)Model.ApplicationBuilds)
+                .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT)
+                .ToList()
+                .Count() == 0)
+                        {
+                            <tr>
+                                <td colspan="3">No Builds found</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (Iteedee.BetaDepot.Models.ApplicationBuildSummaryModel b in Model.ApplicationBuilds)
+                            {
                                     <tr>
-                                        <td colspan="3">No Builds found</td>
+                                        <td>@b.AppName (@b.Environment)</td>
+                                        <td>@b.UploadedDtm</td>
+                                        <td>@b.UploadedByName</td>
+                                        <td><a href="@b.InstallUrl" class="btn btn-primary">Install</a></td>
                                     </tr>
-                                }
-                                else
-                                {
-                                    foreach (Iteedee.BetaDepot.Models.ApplicationBuildSummaryModel b in Model.ApplicationBuilds)
-                                    {
-                                        if (b.Environment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT)
-                                        {
-                                            <tr>
-                                                <td>@b.AppName</td>
-                                                <td>@b.UploadedDtm</td>
-                                                <td><a href="@b.InstallUrl" class="btn btn-primary">Install</a></td>
-                                            </tr>
-                                            <tr>
-
-                                                <td colspan="3">
-                                                    <strong>BuildNotes:</strong>
-
-                                                    <blockquote>
-                                                        <footer>@b.BuildNotes</footer>
-                                                    </blockquote>
-                                                </td>
-
-                                            </tr>
-                                        }
-                                    }
-                                }
-                            </tbody>
-                        </table>
-
-
-                    </div>
-                    <div class="tab-pane" id="tbTest">
-
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Build Name</th>
-                                    <th>Added Date</th>
-                                    <th>Download</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (((IEnumerable<ApplicationBuildSummaryModel>)Model.ApplicationBuilds)
-                        .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_TEST)
-                        .ToList()
-                        .Count() == 0)
-                                {
                                     <tr>
-                                        <td colspan="3">No Builds found</td>
+                                        
+                                        <td colspan="4" style="padding-left:50px;">
+                                            <strong>BuildNotes:</strong>
+
+                                            <blockquote>
+                                                <footer>@b.BuildNotes</footer>
+                                            </blockquote>
+                                        </td>
+
                                     </tr>
-                                }
-                                else
-                                {
-                                    foreach (Iteedee.BetaDepot.Models.ApplicationBuildSummaryModel b in Model.ApplicationBuilds)
-                                    {
-                                        if (b.Environment == Constants.BUILD_ENVIRONMENT_TEST)
-                                        {
-                                            <tr>
-                                                <td>@b.AppName</td>
-                                                <td>@b.UploadedDtm</td>
-                                                <td><a href="@b.InstallUrl" class="btn btn-primary">Install</a></td>
-                                            </tr>
-                                            <tr>
-
-                                                <td colspan="3">
-                                                    <blockquote>
-                                                        <footer>@b.BuildNotes</footer>
-                                                    </blockquote>
-                                                </td>
-
-                                            </tr>
-                                        }
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="tab-pane" id="tbProduction">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Build Name</th>
-                                    <th>Added Date</th>
-                                    <th>Download</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (((IEnumerable<ApplicationBuildSummaryModel>)Model.ApplicationBuilds)
-                        .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_PRODUCTION)
-                        .ToList()
-                        .Count() == 0)
-                                {
-                                    <tr>
-                                        <td colspan="3">No Builds found</td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    foreach (Iteedee.BetaDepot.Models.ApplicationBuildSummaryModel b in Model.ApplicationBuilds)
-                                    {
-                                        if (b.Environment == Constants.BUILD_ENVIRONMENT_PRODUCTION)
-                                        {
-                                            <tr>
-                                                <td>@b.AppName</td>
-                                                <td>@b.UploadedDtm</td>
-                                                <td><a href="@b.InstallUrl" class="btn btn-primary">Install</a></td>
-                                            </tr>
-                                            <tr>
-
-                                                <td colspan="3">
-                                                    <blockquote>
-                                                        <footer>@b.BuildNotes</footer>
-                                                    </blockquote>
-                                                </td>
-
-                                            </tr>
-                                        }
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            }
+                        }
+                    </tbody>
+                </table>
             }
 
         }

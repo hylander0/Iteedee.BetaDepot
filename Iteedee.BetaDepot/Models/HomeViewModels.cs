@@ -25,7 +25,7 @@ namespace Iteedee.BetaDepot.Models
         public string InstallUrl { get; set; }
         public string BuildNotes { get; set; }
         public string VersionNumber { get; set; }
-        public string UploadedByUserName { get; set; }
+        public string UploadedByName { get; set; }
         public string UploadedDtm { get; set; }
         public string Environment { get; set; }
 

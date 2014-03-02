@@ -46,7 +46,7 @@ namespace Iteedee.BetaDepot.Platforms
             else if (Platform.ToUpper() == Constants.BUILD_PLATFORM_ANDROID)
             {
 
-                retval = string.Format("{0}{1}/{2}/?FileName={0}&Platform={1}", (buildUnqiueId + ".apk"), Constants.BUILD_PLATFORM_ANDROID);
+                retval = string.Format("{0}{1}/{2}/?FileName={0}&Platform={1}", BaseUrl, Controller, Action, (buildUnqiueId + ".apk"), Constants.BUILD_PLATFORM_ANDROID);
             }
 
             return retval;

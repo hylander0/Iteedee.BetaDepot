@@ -14,6 +14,7 @@ using Iteedee.BetaDepot.Repository;
 
 namespace Iteedee.BetaDepot.Controllers
 {
+    [Authorize]
     public class AppController : Controller
     {
         public FileResult Download(string FileName, string Platform)
@@ -45,6 +46,17 @@ namespace Iteedee.BetaDepot.Controllers
             }
 
         }
+
+        //public FileResult GetAppIconImage(string AppUniqueIdentifier)
+        //{
+
+
+        //    string filePath = Path.Combine(Server.MapPath("~/App_Data/Files"), FileName);
+        //    //Return actual file
+        //    byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+        //    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, FileName);
+        //}
+
         private string BaseUrl()
         {
             //return string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
@@ -106,6 +118,7 @@ namespace Iteedee.BetaDepot.Controllers
 
                 //iOS
                 Platforms.iOS.iOSBundleData bundleData = Platforms.iOS.iOSBundle.GetIPABundleData(filePath);
+                Platforms.iOS.iOSBundle.ExtractBundleAppIconIfNotExists(filePath, Server.MapPath("~/App_Data/Files/Icons"), bundleData.BundleIdentifier);
                 return Json(new
                 {
                     Status = "OK",

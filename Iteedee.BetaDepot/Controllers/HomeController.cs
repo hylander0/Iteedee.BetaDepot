@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Iteedee.BetaDepot.Common;
+using Iteedee.BetaDepot.Repository;
 
 namespace Iteedee.BetaDepot.Controllers
 {
@@ -14,7 +15,7 @@ namespace Iteedee.BetaDepot.Controllers
 
         [HttpGet]
         [Authorize]
-        public ActionResult Index(string platform)
+        public ActionResult Index()
         {
             HomeSummary summary = new HomeSummary();
             using (var context = new Repository.BetaDepotContext())
@@ -28,43 +29,27 @@ namespace Iteedee.BetaDepot.Controllers
                     });
                 });
 
-                if(platform != null)
-                {
-                    string userName = User.Identity.GetUserName();
-                    var apps = context.Applications.Where(w =>
-                                w.AssignedMembers.Contains(
-                                                context.TeamMembers.Where(wt => wt.UserName == userName).FirstOrDefault())
-                                                ).ToList();
+                Repository.Managers.ApplicationBuildMgr.GetAllBuildsAssignedToMember(User.Identity.GetUserName())
+                     .ForEach(f => {
 
-                    apps.ForEach(a =>
-                    {
-                        List<Repository.ApplicationBuild> builds = Repository.Managers.ApplicationBuildMgr
-                                                                        .GetLastestBuildsByApplicationAndPlatform(a.Id, platform);
+                         summary.ApplicationBuilds.Add(new ApplicationBuildSummaryModel()
+                         {
+                             AppId = f.Id,
+                             AppName = f.Application.Name,
+                             Environment = f.Environment.EnvironmentName,
+                             InstallUrl = Platforms.Common.GeneratePackageInstallUrl(BaseUrl(), "App", "Download", f.Platform, f.UniqueIdentifier.ToString()),
+                             Platform = f.Platform,
+                             UploadedByName = String.Format("{0} {1}", f.AddedBy.FirstName, f.AddedBy.LastName),
+                             UploadedDtm = Common.Functions.GetPrettyDate(f.AddedDtm.ToLocalTime(), "MM/dd/yy"),
+                             BuildNotes = f.Notes
 
-                        if (builds != null)
-                            foreach (Repository.ApplicationBuild b in builds)
-                            {
-                                summary.ApplicationBuilds.Add(new ApplicationBuildSummaryModel()
-                                {
-                                    AppId = a.Id,
-                                    AppName = a.Name,
-                                    //Environment = b.environment.EnvironmentName,
-                                    Environment = Common.Constants.BUILD_ENVIRONMENT_DEVELOPMENT,
-                                    InstallUrl = Platforms.Common.GeneratePackageInstallUrl(BaseUrl(), "App", "Download", a.Platform, b.UniqueIdentifier.ToString()),
-                                    Platform = platform,
-                                    UploadedByUserName = String.Format("{0} {1}", b.AddedBy.FirstName, b.AddedBy.LastName),
-                                    UploadedDtm = Common.Functions.GetPrettyDate(b.AddedDtm.ToLocalTime(), "MM/dd/yy"),
-                                    BuildNotes = b.Notes
-
-                                });
-                            }
-                    });
-                }
-               
+                         });
+                     });
             }
             return View(summary);
         }
-
+        [HttpGet]
+        [Authorize]
         public ActionResult Platform(string platform)
         {
             HomeSummary summary = new HomeSummary();
@@ -99,11 +84,10 @@ namespace Iteedee.BetaDepot.Controllers
                                 {
                                     AppId = a.Id,
                                     AppName = a.Name,
-                                    //Environment = b.environment.EnvironmentName,
-                                    Environment = Common.Constants.BUILD_ENVIRONMENT_DEVELOPMENT,
+                                    Environment = b.Environment.EnvironmentName,
                                     InstallUrl = Platforms.Common.GeneratePackageInstallUrl(BaseUrl(), "App", "Download", a.Platform, b.UniqueIdentifier.ToString()),
                                     Platform = platform,
-                                    UploadedByUserName = String.Format("{0} {1}", b.AddedBy.FirstName, b.AddedBy.LastName),
+                                    UploadedByName = String.Format("{0} {1}", b.AddedBy.FirstName, b.AddedBy.LastName),
                                     UploadedDtm = Common.Functions.GetPrettyDate(b.AddedDtm.ToLocalTime(), "MM/dd/yy"),
                                     BuildNotes = b.Notes
 

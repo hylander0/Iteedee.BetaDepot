@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Data.Entity;
 
 namespace Iteedee.BetaDepot.Repository.Managers
 {
@@ -106,6 +107,31 @@ namespace Iteedee.BetaDepot.Repository.Managers
             }
 
             return retval;
+        }
+
+        public static List<ApplicationBuild> GetAllBuildsAssignedToMember(string CurrentUserName)
+        {
+            List<ApplicationBuild> retval;
+            using (var context = new Repository.BetaDepotContext())
+            {
+                //TeamMember currentMember = context.TeamMembers.Where(w => w.UserName == CurrentUserName).FirstOrDefault();
+                //List<Application> apps = new List<Application>();
+                //context.Applications
+
+                var q = (from b in context.Builds.Include("Environment")
+                                    .Include("Application")
+                                    .Include("AddedBy")
+                          join a in context.Applications on b.Application.Id equals a.Id
+                          where a.AssignedMembers.Any(any => any.UserName == CurrentUserName)
+                          select b).Include("Environment")
+                                    .Include("Application")
+                                    .Include("AddedBy");
+
+
+                return q.ToList();
+
+            }
+            
         }
 
         private static void CreateAndGetApplicationIfNoExists(string Name, string AppIdentifier, string Platform, string CurrentUserName)

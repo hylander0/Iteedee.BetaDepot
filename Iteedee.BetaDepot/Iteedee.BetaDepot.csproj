@@ -204,7 +204,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\PlatformViewModel.cs" />
     <Compile Include="Platforms\Android\AndroidDecompress.cs" />
-    <Compile Include="Platforms\Android\AndroidManifest.cs" />
+    <Compile Include="Platforms\Android\AndroidPackage.cs" />
     <Compile Include="Platforms\Android\AndroidManifestData.cs" />
     <Compile Include="Platforms\Common.cs" />
     <Compile Include="Platforms\iOS\iOSBundle.cs" />
@@ -235,6 +235,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Views\Platform\Index.cshtml" />
+    <Content Include="Views\Platform\BuildHistory.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

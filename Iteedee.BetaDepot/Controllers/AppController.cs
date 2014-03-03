@@ -108,7 +108,8 @@ namespace Iteedee.BetaDepot.Controllers
             if (Platforms.Common.GetFilesBuildPlatform(files.ElementAt(0).FileName) == Constants.BUILD_PLATFORM_ANDROID)
             {
                 //Android
-                Platforms.Android.AndroidManifestData data = Platforms.Android.AndroidManifest.GetManifestData(filePath);
+                Platforms.Android.AndroidManifestData data = Platforms.Android.AndroidPackage.GetManifestData(filePath);
+                Platforms.Android.AndroidPackage.ExtractPackageAppIconIfNotExists(filePath, Server.MapPath("~/App_Data/Files/Icons"), data.PackageName);
                 return Json(new
                 {
                     Status = "OK",

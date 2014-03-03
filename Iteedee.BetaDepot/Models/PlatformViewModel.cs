@@ -33,4 +33,28 @@ namespace Iteedee.BetaDepot.Models
         }
 
     }
+
+    public class PlatformBuildHistory
+    {
+        public PlatformBuildHistory()
+        {
+            Builds = new List<BuildHistory>();
+        }
+
+        public List<BuildHistory> Builds { get; set; }
+
+        public class BuildHistory
+        {
+            public int AppId { get; set; }
+            public string AppName { get; set; }
+            public string AppIconUrl { get; set; }
+            public string Platform { get; set; }
+            public string InstallUrl { get; set; }
+            public string BuildNotes { get; set; }
+            public string VersionNumber { get; set; }
+            public string UploadedByName { get; set; }
+            public string UploadedDtm { get; set; }
+            public string Environment { get; set; }
+        }
+    }
 }

@@ -16,7 +16,7 @@ namespace Iteedee.BetaDepot.Repository.Managers
             string BuildType = Platforms.Common.GetFilesBuildPlatform(Path.GetFileName(FilePath));
             if (BuildType.ToUpper() == Constants.BUILD_PLATFORM_ANDROID)
             {
-                Platforms.Android.AndroidManifestData data = Platforms.Android.AndroidManifest.GetManifestData(FilePath);
+                Platforms.Android.AndroidManifestData data = Platforms.Android.AndroidPackage.GetManifestData(FilePath);
                 CreateAndGetApplicationIfNoExists(data.ApplicationName, data.PackageName, Constants.BUILD_PLATFORM_ANDROID, CurrentUserName);
 
                 using (var context = new Repository.BetaDepotContext())
@@ -92,8 +92,8 @@ namespace Iteedee.BetaDepot.Repository.Managers
             {
                 var latestBuilds = (from b in context.Builds
                                  where (b.Application == context.Applications.Where(w => w.Id == appId).FirstOrDefault())
-                                         && (b.Platform == platform) && (b.Environment.EnvironmentName == Common.Constants.BUILD_ENVIRONMENT_DEVELOPMENT)
-                                    group b by new { b.Application.Id } into g
+                                         && (b.Platform == platform)
+                                    group b by new { b.Application.Id, b.Environment } into g
                                  select new { AppId = g.Key.Id, Date = g.Max(t => t.AddedDtm) }).ToList();
 
                 Console.Write(latestBuilds.Count());
@@ -111,7 +111,7 @@ namespace Iteedee.BetaDepot.Repository.Managers
 
             return retval;
         }
-
+        //UNTESTED
         public static List<ApplicationBuild> GetAllBuildsAssignedToMember(string CurrentUserName)
         {
             List<ApplicationBuild> retval;

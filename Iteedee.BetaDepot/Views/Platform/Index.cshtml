@@ -12,9 +12,36 @@
         @if (User.Identity.IsAuthenticated)
         {
                 <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                    <li class="active"><a href="#tbDevelopment" data-toggle="tab">Development</a></li>
-                    <li><a href="#tbTest" data-toggle="tab">Test</a></li>
-                    <li><a href="#tbProduction" data-toggle="tab">Production</a></li>
+                    <li class="active">
+                        <a href="#tbDevelopment" data-toggle="tab">Development 
+                            <span class="badge badge-info">
+                                @(((IEnumerable<PlatformViewModel.PlatformBuildDetail>)Model.Applications)
+                        .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT)
+                        .ToList()
+                        .Count())
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tbTest" data-toggle="tab">Test
+                            <span class="badge badge-info">
+                                @(((IEnumerable<PlatformViewModel.PlatformBuildDetail>)Model.Applications)
+                                .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_TEST)
+                                .ToList()
+                                .Count())
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tbProduction" data-toggle="tab">Production 
+                            <span class="badge badge-info">
+                                @(((IEnumerable<PlatformViewModel.PlatformBuildDetail>)Model.Applications)
+                                .Where(w => w.Environment == Constants.BUILD_ENVIRONMENT_PRODUCTION)
+                                .ToList()
+                                .Count())
+                            </span>
+                        </a>
+                    </li>
                 </ul>
                 <div id="my-tab-content" class="tab-content">
                     <div class="tab-pane active" id="tbDevelopment">
@@ -43,15 +70,15 @@
                                                     <h3 class="panel-title">@b.AppName</h3>
                                                 </div>
                                                 <div class="panel-body">
-                                                    <div class="col-lg-2">
+                                                    <div class="col-sm-3">
                                                         <img src="@b.AppIconUrl" alt="@b.AppName" />
                                                     </div>
-                                                    <div class="col-lg-8">
+                                                    <div class="col-sm-7">
                                                         <div class="row">
                                                             <div class="row">
                                                                 <div>
                                                                     <h4>Latest Build : Version <strong>@b.VersionNumber</strong></h4>
-                                                                    <small>Latest Build Added by <strong>@b.UploadedByName | @b.UploadedDtm</strong></small> 
+                                                                    <small>Latest Build Added by <strong>@b.UploadedByName  <span class="text-muted">@b.UploadedDtm</span></strong></small>
                                                                 </div>
                                                             </div>
                                                             <div class="row" style="padding:10px;">
@@ -61,16 +88,16 @@
                                                                         @b.BuildNotes
                                                                     </small>
                                                                 </div>
-                                                                
+
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-2">
+                                                    <div class="col-sm-2">
                                                         <div style="padding:5px;">
                                                             <a href="@b.InstallUrl" class="btn btn-primary">Install</a>
                                                         </div>
                                                         <div style="padding:5px;">
-                                                            <a href="#" class="btn btn-info">Previous Builds</a>
+                                                            <a href="#" class="btn btn-default btn-sm">Previous Builds</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -86,7 +113,7 @@
                         .ToList()
                         .Count() == 0)
                                 {
-                                    <span>No Builds found</span>
+                                    <h4>No Builds found</h4>
                                 }
                                 else
                                 {
@@ -99,15 +126,15 @@
                                                     <h3 class="panel-title">@b.AppName</h3>
                                                 </div>
                                                 <div class="panel-body">
-                                                    <div class="col-lg-2">
+                                                    <div class="col-sm-3">
                                                         <img src="@b.AppIconUrl" alt="@b.AppName" />
                                                     </div>
-                                                    <div class="col-lg-8">
+                                                    <div class="col-sm-7">
                                                         <div class="row">
                                                             <div class="row">
                                                                 <div>
                                                                     <h4>Latest Build : Version <strong>@b.VersionNumber</strong></h4>
-                                                                    <small>Latest Build Added by <strong>@b.UploadedByName | @b.UploadedDtm</strong></small> 
+                                                                    <small>Latest Build Added by <strong>@b.UploadedByName <span class="text-muted">@b.UploadedDtm</span></strong></small>
                                                                 </div>
                                                             </div>
                                                             <div class="row" style="padding:10px;">
@@ -117,16 +144,16 @@
                                                                         @b.BuildNotes
                                                                     </small>
                                                                 </div>
-                                                                
+
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-2">
+                                                    <div class="col-sm-2">
                                                         <div style="padding:5px;">
                                                             <a href="@b.InstallUrl" class="btn btn-primary">Install</a>
                                                         </div>
                                                         <div style="padding:5px;">
-                                                            <a href="#" class="btn btn-info">Previous Builds</a>
+                                                            <a href="#" class="btn btn-default btn-sm">Previous Builds</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -141,7 +168,7 @@
                         .ToList()
                         .Count() == 0)
                                 {
-                                    <span> Builds found</span>
+                                    <h4>No Builds found</h4>
                                 }
                                 else
                                 {
@@ -154,15 +181,15 @@
                                                     <h3 class="panel-title">@b.AppName</h3>
                                                 </div>
                                                 <div class="panel-body">
-                                                    <div class="col-lg-2">
+                                                    <div class="col-sm-3">
                                                         <img src="@b.AppIconUrl" alt="@b.AppName" />
                                                     </div>
-                                                    <div class="col-lg-8">
+                                                    <div class="col-sm-7">
                                                         <div class="row">
                                                             <div class="row">
                                                                 <div>
                                                                     <h4>Latest Build : Version <strong>@b.VersionNumber</strong></h4>
-                                                                    <small>Latest Build Added by <strong>@b.UploadedByName | @b.UploadedDtm</strong></small> 
+                                                                    <small>Latest Build Added by <strong>@b.UploadedByName <span class="text-muted">@b.UploadedDtm</span></strong></small>
                                                                 </div>
                                                             </div>
                                                             <div class="row" style="padding:10px;">
@@ -172,16 +199,16 @@
                                                                         @b.BuildNotes
                                                                     </small>
                                                                 </div>
-                                                                
+
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-2">
+                                                    <div class="col-sm-2">
                                                         <div style="padding:5px;">
                                                             <a href="@b.InstallUrl" class="btn btn-primary">Install</a>
                                                         </div>
                                                         <div style="padding:5px;">
-                                                            <a href="#" class="btn btn-info">Previous Builds</a>
+                                                            <a href="#" class="btn btn-default btn-sm">Previous Builds</a>
                                                         </div>
                                                     </div>
                                                 </div>

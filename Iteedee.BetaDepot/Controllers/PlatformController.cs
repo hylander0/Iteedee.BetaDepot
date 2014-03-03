@@ -9,6 +9,7 @@ using System.Net;
 
 namespace Iteedee.BetaDepot.Controllers
 {
+    [Authorize]
     public class PlatformController : Controller
     {
         //
@@ -26,6 +27,7 @@ namespace Iteedee.BetaDepot.Controllers
                     List<Repository.Application> apps = context.Applications.Where(w =>
                                 w.AssignedMembers.Contains(
                                                 context.TeamMembers.Where(wt => wt.UserName == userName).FirstOrDefault())
+                                                && w.Platform.ToLower() == platform.ToLower()
                                                 ).ToList();
                     foreach(Repository.Application a in apps)
                     {
@@ -56,6 +58,16 @@ namespace Iteedee.BetaDepot.Controllers
             return View(mdl);
         }
 
+        public ActionResult BuildHistory(string platform, string environment)
+        {
+
+            Models.PlatformViewModel mdl = new Models.PlatformViewModel();
+            using(var context = new BetaDepot.Repository.BetaDepotContext())
+            {
+
+            }
+            return View(mdl);
+        }
 
         private string BaseUrl()
         {

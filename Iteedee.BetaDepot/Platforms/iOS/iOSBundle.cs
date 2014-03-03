@@ -26,7 +26,7 @@ namespace Iteedee.BetaDepot.Platforms.iOS
 
         public static void ExtractBundleAppIconIfNotExists(string ipaFilePath, string iconStoreDirectory, string appIdentifier)
         {
-            string retval = Path.Combine(iconStoreDirectory, Path.GetFileNameWithoutExtension(ipaFilePath) + ".png");
+            //string retval = Path.Combine(iconStoreDirectory, Path.GetFileNameWithoutExtension(ipaFilePath) + ".png");
             //if(File.Exists(retval))
             //    return;
             //if (File.Exists(Path.Combine(iconStoreDirectory, Path.GetFileNameWithoutExtension(ipaFilePath) + ".jpg")))
@@ -65,15 +65,18 @@ namespace Iteedee.BetaDepot.Platforms.iOS
                     {
                         byte[] bytes = new byte[50 * 1024];
 
-                        Stream strm = zipfile.GetInputStream(item);
-                        int size = strm.Read(bytes, 0, bytes.Length);
-
-                        using (BinaryReader s = new BinaryReader(strm))
+                        using( Stream strm = zipfile.GetInputStream(item))
                         {
-                            byte[] bytes2 = new byte[size];
-                            Array.Copy(bytes, bytes2, size);
-                            plist = (Dictionary<string, object>)PlistCS.readPlist(bytes2);
+                            int size = strm.Read(bytes, 0, bytes.Length);
+
+                            using (BinaryReader s = new BinaryReader(strm))
+                            {
+                                byte[] bytes2 = new byte[size];
+                                Array.Copy(bytes, bytes2, size);
+                                plist = (Dictionary<string, object>)PlistCS.readPlist(bytes2);
+                            }
                         }
+                       
 
                         break;
                     }
@@ -125,15 +128,6 @@ namespace Iteedee.BetaDepot.Platforms.iOS
             }
             return result;
         }
-        public static void CopyStream(Stream input, Stream output)
-        {
-            byte[] buffer = new byte[8 * 1024];
-            int len;
-            while ((len = input.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                output.Write(buffer, 0, len);
-            }
-        }
         private static void SaveUnCrushedAppIcon(string ipaFilePath, string iconDirectory, string appIdentifier, bool GetRetina)
         {
             byte[] retval = null;
@@ -174,28 +168,31 @@ namespace Iteedee.BetaDepot.Platforms.iOS
 
                         byte[] bytes = new byte[50 * 1024];
 
-                        Stream strm = zipfile.GetInputStream(item);
-                        int size = strm.Read(bytes, 0, bytes.Length);
-
-                        using (BinaryReader s = new BinaryReader(strm))
+                        using(Stream strm = zipfile.GetInputStream(item))
                         {
-                            byte[] bytes2 = new byte[size];
-                            Array.Copy(bytes, bytes2, size);
+                            int size = strm.Read(bytes, 0, bytes.Length);
 
-                            using (MemoryStream input = new MemoryStream(bytes2))
-                            using (FileStream output = File.Create(Path.Combine(iconDirectory, uniqueIconFileName)))
+                            using (BinaryReader s = new BinaryReader(strm))
                             {
-                                try
-                                {
-                                    PNGDecrush.PNGDecrusher.Decrush(input, output);
-                                }
-                                catch (InvalidDataException ex)
-                                {
-                                    throw ex;
-                                }
-                            }
+                                byte[] bytes2 = new byte[size];
+                                Array.Copy(bytes, bytes2, size);
 
+                                using (MemoryStream input = new MemoryStream(bytes2))
+                                using (FileStream output = File.Create(Path.Combine(iconDirectory, uniqueIconFileName)))
+                                {
+                                    try
+                                    {
+                                        PNGDecrush.PNGDecrusher.Decrush(input, output);
+                                    }
+                                    catch (InvalidDataException ex)
+                                    {
+                                        throw ex;
+                                    }
+                                }
+
+                            }
                         }
+                      
 
                         break;
                     }

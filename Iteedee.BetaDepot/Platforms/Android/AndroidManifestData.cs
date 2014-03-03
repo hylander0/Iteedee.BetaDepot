@@ -11,5 +11,6 @@ namespace Iteedee.BetaDepot.Platforms.Android
         public string PackageName { get; set; }
         public string VersionCode { get; set; }
         public string VersionName { get; set; }
+        public string ApplicationIconName { get; set; }
     }
 }

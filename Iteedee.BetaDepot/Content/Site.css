@@ -63,7 +63,11 @@ input[type="checkbox"].input-validation-error {
 }
 
 
-
+.badge-info {
+  background-color: #0079A1;
+  color:white;
+  font-weight:bold;
+}
 /*Handle Field Labels
 .form-horizontal .control-group .controls label {
  margin-top: 5px;

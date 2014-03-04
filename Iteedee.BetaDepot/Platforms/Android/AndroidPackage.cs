@@ -23,19 +23,13 @@ namespace Iteedee.BetaDepot.Platforms.Android
                 {
                     ICSharpCode.SharpZipLib.Zip.ZipFile zipfile = new ICSharpCode.SharpZipLib.Zip.ZipFile(filestream);
                     ICSharpCode.SharpZipLib.Zip.ZipEntry item;
-                    item = zipfile.GetEntry(string.Format("res/drawable-mdpi/{0}.png", packageData.ApplicationIconName));
-                    if (item == null)
-                        item = zipfile.GetEntry(string.Format("res/drawable-hdpi/{0}.png", packageData.ApplicationIconName));
-                    if (item == null)
-                        item = zipfile.GetEntry(string.Format("res/drawable-ldpi/{0}.png", packageData.ApplicationIconName));
-                    if (item == null)
-                        item = zipfile.GetEntry(string.Format("res/drawable-xhdpi/{0}.xml", packageData.ApplicationIconName));
+                    item = zipfile.GetEntry(packageData.ApplicationIconName);
                     if (item == null)
                         return;
-
+                    string fileType = Path.GetExtension(packageData.ApplicationIconName);
 
                     using (Stream strm = zipfile.GetInputStream(item))
-                    using (FileStream output = File.Create(Path.Combine(iconStoreDirectory, packageName)))
+                    using (FileStream output = File.Create(Path.Combine(iconStoreDirectory, packageName + fileType)))
                     {
                         try
                         {
@@ -51,6 +45,42 @@ namespace Iteedee.BetaDepot.Platforms.Android
 
             }
         }
+        private static string GetBestIconAvailable(List<string> icons)
+        {
+            string retval = string.Empty;
+            icons.ForEach(f => {
+                if (f.Contains("mdpi"))
+                {
+                    retval =  f;
+                    return;
+                }
+            });
+            icons.ForEach(f =>
+            {
+                if (f.Contains("hdpi"))
+                {
+                    retval = f;
+                    return;
+                }
+            });
+            icons.ForEach(f =>
+            {
+                if (f.Contains("ldpi"))
+                {
+                    retval = f;
+                    return;
+                }
+            });
+            icons.ForEach(f =>
+            {
+                if (f.Contains("xhdpi"))
+                {
+                    retval = f;
+                    return;
+                }
+            });
+            return retval;
+        }
         //private static void CopyStream(Stream input, Stream output)
         //{
         //    byte[] buffer = new byte[8 * 1024];
@@ -62,11 +92,12 @@ namespace Iteedee.BetaDepot.Platforms.Android
         //}
         public static AndroidManifestData GetManifestData(String apkFilePath)
         {
-            string content = "";
+            string manifestXml = string.Empty;
+            byte[] resourcesData = new byte[0];
+
             ICSharpCode.SharpZipLib.Zip.ZipInputStream zip = new ICSharpCode.SharpZipLib.Zip.ZipInputStream(File.OpenRead(apkFilePath));
 
-            XDocument xDocManifest = new XDocument();
-            XDocument xDocResource = new XDocument();
+
             using (var filestream = new FileStream(apkFilePath, FileMode.Open, FileAccess.Read))
             {
                 ICSharpCode.SharpZipLib.Zip.ZipFile zipfile = new ICSharpCode.SharpZipLib.Zip.ZipFile(filestream);
@@ -81,19 +112,27 @@ namespace Iteedee.BetaDepot.Platforms.Android
 
                         using(Stream strm = zipfile.GetInputStream(item))
                         {
-                            int size = strm.Read(bytes, 0, bytes.Length);
+                            int size = strm.Read(bytes, 0, bytes.Length);     
+                            AndroidDecompress decompress = new AndroidDecompress();
+                            manifestXml = decompress.decompressXML(bytes);
+                        }
+
+                    }
+                    if (item.Name.ToLower() == "resources.arsc")
+                    {
+
+
+                        using (Stream strm = zipfile.GetInputStream(item))
+                        {
+                            //int size = strm.Read(bytes, 0, bytes.Length);
 
                             using (BinaryReader s = new BinaryReader(strm))
                             {
-                                byte[] bytes2 = new byte[size];
-                                Array.Copy(bytes, bytes2, size);
-                                AndroidDecompress decompress = new AndroidDecompress();
-                                content = decompress.decompressXML(bytes);
-                            }
-                            xDocManifest = XDocument.Parse(content);
-                        }
+                                resourcesData = s.ReadBytes((int)s.BaseStream.Length);
 
-                        break;
+                            }
+                            //xDocManifest = XDocument.Parse(manifestXml);
+                        }
                     }
                     //if (item.Name.ToLower() == "resources.arsc")
                     //{
@@ -116,20 +155,18 @@ namespace Iteedee.BetaDepot.Platforms.Android
                 // XmlDocument manifest = new XmlDocument();
                 // manifest.LoadXml(content);
             }
-
-            string parcedAppName = xDocManifest.Descendants("manifest").ElementAt(0).Attribute("package").Value;
-            string[] classes = parcedAppName.Split(Convert.ToChar("."));
-            parcedAppName = classes[classes.Count() - 1];
-            parcedAppName = parcedAppName.First().ToString().ToUpper() + String.Join("", parcedAppName.Skip(1));
+            APKReader apkReader = new APKReader();
+            ApkInfo info = apkReader.extractInfo(manifestXml, resourcesData);
+            string AppName = info.label;
 
 
             return new AndroidManifestData()
             {
-                VersionCode = xDocManifest.Descendants("manifest").ElementAt(0).Attribute("versionCode").Value,
-                VersionName = xDocManifest.Descendants("manifest").ElementAt(0).Attribute("versionName").Value,
-                PackageName = xDocManifest.Descendants("manifest").ElementAt(0).Attribute("package").Value,
-                ApplicationName = parcedAppName,
-                ApplicationIconName = xDocManifest.Descendants("manifest").ElementAt(0).Descendants("application").ElementAt(0).Attribute("icon").Value
+                VersionCode = info.versionCode,
+                VersionName = info.versionName,
+                PackageName = info.packageName,
+                ApplicationName = info.label,
+                ApplicationIconName = GetBestIconAvailable(info.iconFileNameToGet)
 
             };
             

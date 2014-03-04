@@ -130,7 +130,6 @@ namespace Iteedee.BetaDepot.Platforms.iOS
         }
         private static void SaveUnCrushedAppIcon(string ipaFilePath, string iconDirectory, string appIdentifier, bool GetRetina)
         {
-            byte[] retval = null;
             Dictionary<string, object> plistInfo = GetIpaPList(ipaFilePath);
 
             List<string> iconFiles = GetiOSBundleIconNames(plistInfo);

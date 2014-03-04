@@ -206,6 +206,7 @@
     <Compile Include="Platforms\Android\AndroidDecompress.cs" />
     <Compile Include="Platforms\Android\AndroidPackage.cs" />
     <Compile Include="Platforms\Android\AndroidManifestData.cs" />
+    <Compile Include="Platforms\Android\APKReader.cs" />
     <Compile Include="Platforms\Common.cs" />
     <Compile Include="Platforms\iOS\iOSBundle.cs" />
     <Compile Include="Platforms\iOS\iOSBundleData.cs" />
@@ -230,6 +231,8 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Libs\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="Libs\Ionic.Zip.dll" />
+    <Content Include="Libs\PNGDecrush.dll" />
     <Content Include="Platforms\iOS\iOSDeploymentPlistTemplate.xml" />
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\bootstrap.js" />

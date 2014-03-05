@@ -14,10 +14,11 @@ namespace Iteedee.BetaDepot.Controllers
     {
         //
         // GET: /Platform/
-        public ActionResult Index(string platform)
+        public ActionResult Index(string id)
         {
-
+            string platform = id;
             Models.PlatformViewModel mdl = new Models.PlatformViewModel();
+            mdl.CurrentPlatform = platform;
             using (var context = new Repository.BetaDepotContext())
             {
 
@@ -58,15 +59,47 @@ namespace Iteedee.BetaDepot.Controllers
             return View(mdl);
         }
 
-        public ActionResult BuildHistory(string platform, string environment)
+        public ActionResult BuildHistory(string id, string environment, int appId)
         {
 
-            Models.PlatformViewModel mdl = new Models.PlatformViewModel();
+            Models.PlatformViewAppBuildHistory mdl = new Models.PlatformViewAppBuildHistory();
+            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), appId))
+                throw new HttpException(403, "You are not a team member of this app.");
             using(var context = new BetaDepot.Repository.BetaDepotContext())
             {
+                Repository.Application app = context.Applications.Where(wa => wa.Id == appId).FirstOrDefault();
+                List<Repository.ApplicationBuild> builds = context.Builds
+                                                                .Where(w => w.Application.Id == appId
+                                                                        && (environment == null || w.Environment.EnvironmentName.ToUpper() == environment.ToUpper()))
+                                                                .OrderByDescending(o => o.AddedDtm)
+                                                                .ToList();
 
+                mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(BaseUrl(), app.ApplicationIdentifier);
+                mdl.AppId = appId;
+                mdl.AppName = app.Name;
+                mdl.Platform = app.Platform;
+                mdl.selectedEnvironment = environment ?? string.Empty;
+                builds.ForEach(f => {
+                    mdl.Builds.Add(new Models.PlatformViewAppBuildHistory.BuildHistory()
+                        {
+                            BuildNotes = f.Notes,
+                            Environment = f.Environment.EnvironmentName,
+                            UploadedByName = String.Format("{0} {1}", f.AddedBy.FirstName, f.AddedBy.LastName),
+                            UploadedDtm = Common.Functions.GetPrettyDate(f.AddedDtm.ToLocalTime(), "MM/dd/yy"),
+                            VersionNumber = string.IsNullOrEmpty(f.versionCode) ? f.versionNumber : string.Format("{0} ({1})", f.versionNumber, f.versionCode),
+                            InstallUrl = Platforms.Common.GeneratePackageInstallUrl(BaseUrl(), "App", "Download", f.Platform, f.UniqueIdentifier.ToString())
+                            
+                        });
+                });
             }
             return View(mdl);
+        }
+
+        public ActionResult Manage(string id)
+        {
+            string platform = id;
+
+            return View();
         }
 
         private string BaseUrl()

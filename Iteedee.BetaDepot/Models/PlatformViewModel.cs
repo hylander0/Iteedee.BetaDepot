@@ -15,6 +15,7 @@ namespace Iteedee.BetaDepot.Models
 
         }
         public List<PlatformBuildDetail> Applications { get; set; }
+        public string CurrentPlatform { get; set; }
 
         public class PlatformBuildDetail
         {
@@ -34,21 +35,22 @@ namespace Iteedee.BetaDepot.Models
 
     }
 
-    public class PlatformBuildHistory
+
+    public class PlatformViewAppBuildHistory
     {
-        public PlatformBuildHistory()
+        public PlatformViewAppBuildHistory()
         {
             Builds = new List<BuildHistory>();
         }
-
+        public int AppId { get; set; }
+        public string AppName { get; set; }
+        public string AppIconUrl { get; set; }
+        public string Platform { get; set; }
+        public string selectedEnvironment { get; set; }
         public List<BuildHistory> Builds { get; set; }
 
         public class BuildHistory
         {
-            public int AppId { get; set; }
-            public string AppName { get; set; }
-            public string AppIconUrl { get; set; }
-            public string Platform { get; set; }
             public string InstallUrl { get; set; }
             public string BuildNotes { get; set; }
             public string VersionNumber { get; set; }

@@ -137,6 +137,20 @@ namespace Iteedee.BetaDepot.Repository.Managers
             
         }
 
+
+        public static bool IsUserAnAppTeamMember(string UserName, int AppId)
+        {
+            bool retval = false;
+            using (var context = new Repository.BetaDepotContext())
+            {
+                retval = context.Applications
+                        .Where(w => w.Id == AppId)
+                            .FirstOrDefault().AssignedMembers
+                            .Where(w => w.UserName.ToLower() == UserName.ToLower())
+                            .Count() > 0;
+            }
+            return retval;
+        }
         private static void CreateAndGetApplicationIfNoExists(string Name, string AppIdentifier, string Platform, string CurrentUserName)
         {
             Application app;

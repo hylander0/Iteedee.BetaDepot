@@ -28,7 +28,10 @@ namespace Iteedee.BetaDepot.Platforms
 
             return string.Empty;
         }
-
+        public static string GenerateAppIconUrl(string BaseUrl, string AppUniqueIdentifier)
+        {
+            return string.Format("{0}App/AppIconImage/?AppUniqueIdentifier={1}", BaseUrl, AppUniqueIdentifier);
+        }
         public static string GeneratePackageInstallUrl(string BaseUrl, string Controller, string Action, string Platform, string buildUnqiueId)
         {
             string retval = "";

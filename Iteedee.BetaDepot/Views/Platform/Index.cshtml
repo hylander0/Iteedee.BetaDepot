@@ -8,6 +8,19 @@
         <h1>Beta Depot</h1>
     </div>
 
+<div class="row">
+    <div class="span12 pull-right">
+        @if (@Model.CurrentPlatform.ToUpper() == Constants.BUILD_PLATFORM_ANDROID)
+        {
+            <a href="~/Platform/Manage/@Model.CurrentPlatform" class="btn btn-success">Manage Android Apps</a>
+        }
+        else if (@Model.CurrentPlatform.ToUpper() == Constants.BUILD_PLATFORM_IOS)
+        {
+            <a href="~/Platform/Manage/@Model.CurrentPlatform" class="btn btn-success">Manage iOS Apps</a>
+        }
+    </div>
+        
+</div>
     <div class="row">
         @if (User.Identity.IsAuthenticated)
         {
@@ -97,7 +110,7 @@
                                                             <a href="@b.InstallUrl" class="btn btn-primary">Install</a>
                                                         </div>
                                                         <div style="padding:5px;">
-                                                            <a href="#" class="btn btn-default btn-sm">Previous Builds</a>
+                                                            <a href="~/Platform/BuildHistory/@b.Platform/?environment=@b.Environment&appId=@b.AppId" class="btn btn-default btn-sm">Previous Builds</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -153,7 +166,7 @@
                                                             <a href="@b.InstallUrl" class="btn btn-primary">Install</a>
                                                         </div>
                                                         <div style="padding:5px;">
-                                                            <a href="#" class="btn btn-default btn-sm">Previous Builds</a>
+                                                            <a href="~/Platform/BuildHistory/@b.Platform/?environment=@b.Environment&appId=@b.AppId" class="btn btn-default btn-sm">Previous Builds</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -208,7 +221,7 @@
                                                             <a href="@b.InstallUrl" class="btn btn-primary">Install</a>
                                                         </div>
                                                         <div style="padding:5px;">
-                                                            <a href="#" class="btn btn-default btn-sm">Previous Builds</a>
+                                                            <a href="~/Platform/BuildHistory/@b.Platform/?environment=@b.Environment&appId=@b.AppId" class="btn btn-default btn-sm">Previous Builds</a>
                                                         </div>
                                                     </div>
                                                 </div>

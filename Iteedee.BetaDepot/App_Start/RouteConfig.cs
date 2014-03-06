@@ -18,6 +18,14 @@ namespace Iteedee.BetaDepot
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+            routes.MapRoute(
+                name: "Platform",
+                url: "{controller}/{action}/{Platform}/{id}",
+                defaults: new { controller = "Home", action = "Index", Platform = UrlParameter.Optional, id = UrlParameter.Optional }
+            );
+            // Add our route registration for MvcSiteMapProvider sitemaps
+            //MvcSiteMapProvider.Web.Mvc.XmlSiteMapController.RegisterRoutes(routes);
+
         }
     }
 }

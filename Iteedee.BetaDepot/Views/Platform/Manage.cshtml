@@ -5,17 +5,21 @@
     ViewBag.Title = "Manage My " + Model.PlatformDesc + "Apps";
 }
 
-<div class="jumbotron">
-    <h2>Manage My @Model.PlatformDesc Apps</h2>
-    @if(Model.Platform == Constants.BUILD_PLATFORM_IOS)
-    {
-        <img src="~/Content/Images/ios-icon.png" alt="iOS" />
-    }
-    else if (Model.Platform == Constants.BUILD_PLATFORM_ANDROID)
-    {
-        <img src="~/Content/Images/android-icon.png" alt="Android" />
-    }
+
+<div class="row">
+    <div class="pull-left">
+        @if (Model.Platform == Constants.BUILD_PLATFORM_IOS)
+        {
+            <img src="~/Content/Images/ios-icon.png" height="100" alt="iOS" />
+        }
+        else if (Model.Platform == Constants.BUILD_PLATFORM_ANDROID)
+        {
+            <img src="~/Content/Images/android-icon.png" height="100" alt="Android" />
+        }
+    </div>
+    <h2 >Manage My @Model.PlatformDesc Apps</h2>
 </div>
+
 <div class="row">
     @if (Model.Apps.Count > 0)
     {
@@ -26,6 +30,7 @@
                     <th class="text-center">Identifier</th>
                     <th class="text-center">Member Count</th>
                     <th class="text-center">Build Count</th>
+                    <th class="text-center">App Role</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -36,15 +41,23 @@
                     <tr>
                         <td>
                             <p class="text-center">
-                                <img style="width: 128px; height: 128px;" src="@b.AppIconUrl" alt="@b.Name" />
+                                <img style="width: 96px; height: 96px;" src="@b.AppIconUrl" alt="@b.Name" />
                             </p>
                             <h2 class="text-center">@b.Name</h2>
                         </td>
                         <td class="text-center" style="font-size:large;">@b.ApplicationIdentifier</td>
                         <td class="text-center" style="font-size:x-large;">@b.TeamMemberCount</td>
                         <td class="text-center" style="font-size:x-large;">@b.UploadedBuildCount</td>
-                        <td class="text-center"><a data-id="@b.Id" href="#" class="btn btn-primary btn-sm">Team Members</a></td>
-                        <td class="text-center"><a data-id="@b.Id" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
+                        <td class="text-center" style="font-size:large;">@b.ApplicationRole</td>
+                        <td class="text-center"><a href="~/Platform/TeamMembers/@b.Platform/@b.Id/" class="btn btn-primary btn-sm">Team Members</a></td>
+                        @if(b.ApplicationRole.ToUpper() == Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR)
+                        {
+                            <td class="text-center"><a data-id="@b.Id" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
+                        }
+                        else
+                        {
+                            <td class="text-center"></td>
+                        }
                     </tr>
                 }
             </tbody>

@@ -26,11 +26,19 @@ namespace Iteedee.BetaDepot.Controllers
                 if (platform != null)
                 {
                     string userName = User.Identity.GetUserName();
-                    List<Repository.Application> apps = context.Applications.Where(w =>
-                                w.AssignedMembers.Contains(
-                                                context.ApplicationTeamMembers.Where(wt => wt.TeamMember.UserName == userName).FirstOrDefault())
-                                                && w.Platform.ToLower() == platform.ToLower()
-                                                ).ToList();
+                    List<Repository.ApplicationTeamMember> membershipList = context.ApplicationTeamMembers
+                                                                .Where(wt => wt.TeamMember.UserName == userName).ToList();
+
+                    var apps = (from a in context.Applications
+                               join tm in context.ApplicationTeamMembers on a.Id equals tm.ApplicationId
+                               where tm.TeamMember.UserName == userName
+                               select a).ToList();
+
+                    //List<Repository.Application> apps = context.Applications.Where(w =>
+                    //            w.AssignedMembers.Contains(
+                    //                            context.ApplicationTeamMembers.Where(wt => wt.TeamMember.UserName.ToLower() == userName.ToLower()).FirstOrDefault())
+                    //                            && w.Platform.ToLower() == platform.ToLower()
+                    //                            ).ToList();
                     foreach(Repository.Application a in apps)
                     {
                         List<Repository.ApplicationBuild> latestBuilds = Repository.Managers.ApplicationBuildMgr.GetLastestBuildsByApplicationAndPlatform(a.Id, platform);
@@ -86,7 +94,7 @@ namespace Iteedee.BetaDepot.Controllers
                 Repository.Application app = context.Applications.Where(wa => wa.Id == appId).FirstOrDefault();
                 List<Repository.ApplicationBuild> builds = context.Builds
                                                                 .Where(w => w.Application.Id == appId
-                                                                        && (environment == null || w.Environment.EnvironmentName.ToUpper() == environment.ToUpper()))
+                                                                        && (environment == null || w.Environment.EnvironmentName == environment))
                                                                 .OrderByDescending(o => o.AddedDtm)
                                                                 .ToList();
 
@@ -125,10 +133,13 @@ namespace Iteedee.BetaDepot.Controllers
           
             using (var context = new BetaDepot.Repository.BetaDepotContext())
             {
-                var apps = context.Applications.Where(w =>
-                                    w.AssignedMembers.Contains(
-                                                    context.ApplicationTeamMembers.Where(wt => wt.TeamMember.UserName == userName).FirstOrDefault())
-                                                    && w.Platform.ToUpper() == platform.ToUpper()).ToList();
+
+
+                var apps = (from a in context.Applications
+                            join tm in context.ApplicationTeamMembers on a.Id equals tm.ApplicationId
+                            where tm.TeamMember.UserName == userName
+                                && a.Platform == platform
+                            select a).ToList();
                 foreach(Repository.Application a in apps)
                 {
                     mdl.Apps.Add(new Models.PlatformViewManage.PlatformViewManageApp()
@@ -138,6 +149,7 @@ namespace Iteedee.BetaDepot.Controllers
                             Name = a.Name,
                             Platform = a.Platform,
                             TeamMemberCount = a.AssignedMembers.Count(),
+                            ApplicationRole = a.AssignedMembers.Where(w => w.TeamMember.UserName == userName).FirstOrDefault().MemberRole,
                             UploadedBuildCount = context.Builds.Where(w => w.Application.Id == a.Id).Count(),
                             AppIconUrl = Platforms.Common.GenerateAppIconUrl(BaseUrl(),a.ApplicationIdentifier)
                             
@@ -147,6 +159,57 @@ namespace Iteedee.BetaDepot.Controllers
             return View(mdl);
         }
 
+        public ActionResult TeamMembers(int id, string platform)
+        {
+            Models.PlatformViewTeamMembers mdl = new Models.PlatformViewTeamMembers();
+            
+
+            
+            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), id))
+                throw new HttpException(403, "You are not a team member of this app.");
+            using(var context = new Repository.BetaDepotContext())
+            {
+
+                Repository.Application app = context.Applications.Where(w => w.Id == id).FirstOrDefault();
+                if (app != null)
+                {
+                    mdl.AppId = app.Id;
+                    mdl.AppName = app.Name;
+                    mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(BaseUrl(), app.ApplicationIdentifier);
+                }
+                else
+                    return View(mdl);
+
+                var q = (from tm in context.TeamMembers
+                         join atm in context.ApplicationTeamMembers on tm.Id equals atm.TeamMemberId
+                         where atm.ApplicationId == id
+                         select new {
+                             TeamMemberId = tm.Id,
+                             EmailAddress = tm.EmailAddress,
+                             FirstName = tm.FirstName,
+                             LastName = tm.LastName,
+                             UserName = tm.UserName,
+                             AssignAppCount = tm.AssignedApplications.Count(),
+                             TeamMembershipRole = atm.MemberRole
+                         });
+
+                q.ToList().ForEach(f => {
+                    mdl.MemberList.Add(new Models.PlatformViewTeamMembers.Members()
+                        {
+                            UserName = f.UserName,
+                            Id = f.TeamMemberId,
+                            EmailAddress = f.EmailAddress,
+                            GravitarUrl = string.Format("http://www.gravatar.com/avatar/{0}?s=36", Common.Functions.GenerateMD5Hash(f.EmailAddress.ToLower())),
+                            Name = Common.Functions.FormatFullName(f.FirstName, f.LastName),
+                            MembershipRole = f.TeamMembershipRole,
+                            AssignAppCount = f.AssignAppCount,
+                            
+                        });
+                });
+
+            }
+            return View(mdl);
+        }
         private string BaseUrl()
         {
             //return string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));

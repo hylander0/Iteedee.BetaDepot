@@ -1,4 +1,5 @@
 ﻿@using Iteedee.BetaDepot.Common
+@using MvcSiteMapProvider.Web.Html
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,7 +34,7 @@
         </div>
     </div>
     <div class="container body-content">
-
+        @Html.MvcSiteMap().SiteMapPath()
         @RenderBody()
         <hr />
         <footer>

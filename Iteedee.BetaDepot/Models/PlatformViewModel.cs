@@ -80,10 +80,36 @@ namespace Iteedee.BetaDepot.Models
             public string ApplicationIdentifier { get; set; }
             public int TeamMemberCount { get; set; }
             public int UploadedBuildCount { get; set; }
+            public string ApplicationRole { get; set; }
             public string Platform { get; set; }
             public string AppIconUrl { get; set; }
 
         }
 
     }
+
+    public class PlatformViewTeamMembers
+    {
+        public PlatformViewTeamMembers()
+        {
+            this.MemberList = new List<PlatformViewTeamMembers.Members>();
+        }
+        public int AppId { get; set; }
+        public String AppIconUrl { get; set; }
+        public String AppName { get; set; }
+        public List<PlatformViewTeamMembers.Members> MemberList { get; set; }
+
+
+        public class Members
+        {
+            public int Id { get; set; }
+            public String GravitarUrl { get; set; }
+            public String Name { get; set; }
+            public String UserName { get; set; }
+            public String MembershipRole { get; set; }
+            public String EmailAddress { get; set; }
+            public int AssignAppCount { get; set; }
+        }
+    }
 }
+

@@ -66,7 +66,7 @@ namespace Iteedee.BetaDepot.Repository.Managers
             List<ApplicationBuild> retval = new List<ApplicationBuild>();
             using (var context = new Repository.BetaDepotContext())
             {
-                BuildEnvironment e = context.Environments.Where(w => w.EnvironmentName.ToLower() == environmentName.ToLower()).FirstOrDefault();
+                BuildEnvironment e = context.Environments.Where(w => w.EnvironmentName == environmentName).FirstOrDefault();
                 int environmentId = e == null ? -1 : e.Id;
 
                 var latestBuilds = (from b in context.Builds
@@ -143,10 +143,25 @@ namespace Iteedee.BetaDepot.Repository.Managers
             bool retval = false;
             using (var context = new Repository.BetaDepotContext())
             {
+                var apps = (from a in context.Applications
+                            join tm in context.ApplicationTeamMembers on a.Id equals tm.ApplicationId
+                            where tm.TeamMember.UserName == UserName
+                                && a.Id == AppId
+                            select a).ToList();
+                if (apps != null)
+                    retval = apps.Count() > 0;
+            }
+            return retval;
+        }
+        public static bool IsUserAnAppTeamMember(string UserName, int AppId, string role)
+        {
+            bool retval = false;
+            using (var context = new Repository.BetaDepotContext())
+            {
                 retval = context.Applications
                         .Where(w => w.Id == AppId)
                             .FirstOrDefault().AssignedMembers
-                            .Where(w => w.TeamMember.UserName.ToLower() == UserName.ToLower())
+                            .Where(w => w.TeamMember.UserName == UserName && w.MemberRole == role)
                             .Count() > 0;
             }
             return retval;

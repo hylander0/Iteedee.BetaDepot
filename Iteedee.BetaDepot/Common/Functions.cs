@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 
@@ -77,6 +78,24 @@ namespace Iteedee.BetaDepot.Common
             }
 
             return date.ToString(format);
+        }
+
+        private static MD5 md5 = System.Security.Cryptography.MD5.Create();
+        public static string GenerateMD5Hash(string itemToHash)
+        {
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(itemToHash);
+            byte[] hash = md5.ComputeHash(inputBytes);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("x2"));
+            }
+            return sb.ToString();
+        }
+
+        public static string FormatFullName(string first, string last)
+        {
+            return String.Format("{0} {1}", first, last);
         }
     }
 }

@@ -226,6 +226,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <None Include="Content\bootstrap.min.css.old" />
+    <Content Include="Content\Images\android-icon.png" />
+    <Content Include="Content\Images\ios-icon.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

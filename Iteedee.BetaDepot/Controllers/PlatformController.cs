@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using System.Net;
+using System.IO;
 
 
 namespace Iteedee.BetaDepot.Controllers
@@ -27,7 +28,7 @@ namespace Iteedee.BetaDepot.Controllers
                     string userName = User.Identity.GetUserName();
                     List<Repository.Application> apps = context.Applications.Where(w =>
                                 w.AssignedMembers.Contains(
-                                                context.TeamMembers.Where(wt => wt.UserName == userName).FirstOrDefault())
+                                                context.ApplicationTeamMembers.Where(wt => wt.TeamMember.UserName == userName).FirstOrDefault())
                                                 && w.Platform.ToLower() == platform.ToLower()
                                                 ).ToList();
                     foreach(Repository.Application a in apps)
@@ -58,7 +59,22 @@ namespace Iteedee.BetaDepot.Controllers
 
             return View(mdl);
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public void DeleteBuild(int id)
+        {
+            using (var context = new Repository.BetaDepotContext())
+            {
+                Repository.ApplicationBuild build = context.Builds.Where(w => w.Id == id).FirstOrDefault();
+                context.Builds.Remove(build);
+                System.IO.File.Delete(Platforms.Common.GetLocalBuildFileLocation(
+                                                                Server.MapPath("~"), 
+                                                                build.UniqueIdentifier.ToString(), 
+                                                                build.Platform)
+                                        );
+                context.SaveChanges();
+            }
+        }
         public ActionResult BuildHistory(string id, string environment, int appId)
         {
 
@@ -82,6 +98,7 @@ namespace Iteedee.BetaDepot.Controllers
                 builds.ForEach(f => {
                     mdl.Builds.Add(new Models.PlatformViewAppBuildHistory.BuildHistory()
                         {
+                            BuildId = f.Id,
                             BuildNotes = f.Notes,
                             Environment = f.Environment.EnvironmentName,
                             UploadedByName = String.Format("{0} {1}", f.AddedBy.FirstName, f.AddedBy.LastName),
@@ -98,8 +115,36 @@ namespace Iteedee.BetaDepot.Controllers
         public ActionResult Manage(string id)
         {
             string platform = id;
-
-            return View();
+            string userName = User.Identity.GetUserName();
+            Models.PlatformViewManage mdl = new Models.PlatformViewManage();
+            mdl.Platform = platform.ToUpper();
+            if (id.ToUpper() == Common.Constants.BUILD_PLATFORM_ANDROID)
+                mdl.PlatformDesc = "Android";
+            else if (id.ToUpper() == Common.Constants.BUILD_PLATFORM_IOS)
+                mdl.PlatformDesc = "iOS";
+          
+            using (var context = new BetaDepot.Repository.BetaDepotContext())
+            {
+                var apps = context.Applications.Where(w =>
+                                    w.AssignedMembers.Contains(
+                                                    context.ApplicationTeamMembers.Where(wt => wt.TeamMember.UserName == userName).FirstOrDefault())
+                                                    && w.Platform.ToUpper() == platform.ToUpper()).ToList();
+                foreach(Repository.Application a in apps)
+                {
+                    mdl.Apps.Add(new Models.PlatformViewManage.PlatformViewManageApp()
+                        {
+                            ApplicationIdentifier = a.ApplicationIdentifier,
+                            Id= a.Id,
+                            Name = a.Name,
+                            Platform = a.Platform,
+                            TeamMemberCount = a.AssignedMembers.Count(),
+                            UploadedBuildCount = context.Builds.Where(w => w.Application.Id == a.Id).Count(),
+                            AppIconUrl = Platforms.Common.GenerateAppIconUrl(BaseUrl(),a.ApplicationIdentifier)
+                            
+                        });
+                }
+            }
+            return View(mdl);
         }
 
         private string BaseUrl()

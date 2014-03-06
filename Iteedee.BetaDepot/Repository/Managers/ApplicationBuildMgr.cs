@@ -120,12 +120,12 @@ namespace Iteedee.BetaDepot.Repository.Managers
                 //TeamMember currentMember = context.TeamMembers.Where(w => w.UserName == CurrentUserName).FirstOrDefault();
                 //List<Application> apps = new List<Application>();
                 //context.Applications
-
+                
                 var q = (from b in context.Builds.Include("Environment")
                                     .Include("Application")
                                     .Include("AddedBy")
                           join a in context.Applications on b.Application.Id equals a.Id
-                          where a.AssignedMembers.Any(any => any.UserName == CurrentUserName)
+                          where a.AssignedMembers.Any(any => any.TeamMember.UserName == CurrentUserName)
                           select b).Include("Environment")
                                     .Include("Application")
                                     .Include("AddedBy");
@@ -146,7 +146,7 @@ namespace Iteedee.BetaDepot.Repository.Managers
                 retval = context.Applications
                         .Where(w => w.Id == AppId)
                             .FirstOrDefault().AssignedMembers
-                            .Where(w => w.UserName.ToLower() == UserName.ToLower())
+                            .Where(w => w.TeamMember.UserName.ToLower() == UserName.ToLower())
                             .Count() > 0;
             }
             return retval;
@@ -164,7 +164,13 @@ namespace Iteedee.BetaDepot.Repository.Managers
                     app = new Application()
                     {
                         ApplicationIdentifier = AppIdentifier,
-                        AssignedMembers = new List<TeamMember>(){ member },
+                        AssignedMembers = new List<ApplicationTeamMember>(){ 
+                           new ApplicationTeamMember()
+                           {
+                               TeamMember = member,
+                               MemberRole = Common.Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR
+                           }
+                        },
                         Name = Name,
                         Platform = Platform
                         

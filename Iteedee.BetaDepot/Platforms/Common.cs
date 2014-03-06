@@ -28,6 +28,19 @@ namespace Iteedee.BetaDepot.Platforms
 
             return string.Empty;
         }
+
+        public static string GetLocalBuildFileLocation(string appFileRoot,string BuildUniqueIdentifier, string Platform)
+        {
+            string retval;
+            string fileName;
+            if(Constants.BUILD_PLATFORM_ANDROID == Platform.ToUpper())
+                fileName =  String.Format("{0}.apk", BuildUniqueIdentifier);
+            else
+                fileName = String.Format("{0}.ipa", BuildUniqueIdentifier);
+            string ipaFileName = String.Format("{0}.ipa", BuildUniqueIdentifier);
+            retval = Path.Combine(appFileRoot, @"App_Data\Files", ipaFileName);
+            return retval;
+        }
         public static string GenerateAppIconUrl(string BaseUrl, string AppUniqueIdentifier)
         {
             return string.Format("{0}App/AppIconImage/?AppUniqueIdentifier={1}", BaseUrl, AppUniqueIdentifier);

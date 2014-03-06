@@ -19,6 +19,7 @@ namespace Iteedee.BetaDepot.Repository
         public DbSet<TeamMember> TeamMembers { get; set; }
         public DbSet<ApplicationBuild> Builds { get; set; }
         public DbSet<BuildEnvironment> Environments { get; set; }
+        public DbSet<ApplicationTeamMember> ApplicationTeamMembers { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -51,6 +51,7 @@ namespace Iteedee.BetaDepot.Models
 
         public class BuildHistory
         {
+            public int BuildId { get; set; }
             public string InstallUrl { get; set; }
             public string BuildNotes { get; set; }
             public string VersionNumber { get; set; }
@@ -58,5 +59,31 @@ namespace Iteedee.BetaDepot.Models
             public string UploadedDtm { get; set; }
             public string Environment { get; set; }
         }
+    }
+
+
+    public class PlatformViewManage
+    {
+        public PlatformViewManage()
+        {
+            Apps = new List<PlatformViewManageApp>();
+            
+        }
+        public List<PlatformViewManageApp> Apps { get; set; }
+        public string Platform { get; set; }
+        public string PlatformDesc { get; set; }
+
+        public class PlatformViewManageApp
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string ApplicationIdentifier { get; set; }
+            public int TeamMemberCount { get; set; }
+            public int UploadedBuildCount { get; set; }
+            public string Platform { get; set; }
+            public string AppIconUrl { get; set; }
+
+        }
+
     }
 }

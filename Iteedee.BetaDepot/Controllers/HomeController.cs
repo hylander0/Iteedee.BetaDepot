@@ -70,7 +70,7 @@ namespace Iteedee.BetaDepot.Controllers
                     string userName = User.Identity.GetUserName();
                     var apps = context.Applications.Where(w =>
                                 w.AssignedMembers.Contains(
-                                                context.TeamMembers.Where(wt => wt.UserName == userName).FirstOrDefault())
+                                                context.ApplicationTeamMembers.Where(wt => wt.TeamMember.UserName == userName).FirstOrDefault())
                                                 ).ToList();
 
                     apps.ForEach(a =>

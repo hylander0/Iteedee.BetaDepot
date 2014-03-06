@@ -10,7 +10,7 @@ namespace Iteedee.BetaDepot.Repository
     public class ApplicationTeamMember
     {
         [Key, Column(Order = 0)]
-        public virtual int MemberId { get; set; }
+        public virtual int TeamMemberId { get; set; }
         [Key, Column(Order = 1)]
         public virtual int ApplicationId { get; set; }
 

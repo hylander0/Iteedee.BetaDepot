@@ -38,6 +38,7 @@
                 <th>Updated Date</th>
                 <th>Notes</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -50,6 +51,7 @@
                 <td>@b.UploadedDtm</td>
                 <td><span class="buildNotes glyphicon glyphicon-edit" data-original-title="@b.BuildNotes"></span></td>
                 <td><a href="@b.InstallUrl" class="btn btn-primary btn-sm">Install</a></td>
+                <td><a data-id="@b.BuildId" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
             </tr>
         }   
         </tbody>
@@ -71,8 +73,33 @@ else
                 $("#cbxEnvironment").change(function () {
                     document.location.href = $(this).find('option:selected').data('url');
                 });
-            };
 
+                $(".btnDelete").click(function () {
+                    var performDelete = confirm("Are you sure you want to delete this build?");
+                    if(performDelete)
+                    {
+                        //$(this).attr("data-id");
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("DeleteBuild", "Platform")',
+                            data: addAntiForgeryToken({ id : $(this).attr("data-id") }),
+                            success: function (data) {
+                                location.reload();
+                            },
+                            error: function (errorData)
+                            {
+                                alert("An Error ocurred while attempting to delete the record.")
+                            }
+                        });
+
+                    }
+                });
+            }
+            var addAntiForgeryToken = function(data) {
+                data.__RequestVerificationToken = $('#__AjaxAntiForgeryForm input[name=__RequestVerificationToken]').val();
+                return data;
+            }
             init();
         });
     </script>

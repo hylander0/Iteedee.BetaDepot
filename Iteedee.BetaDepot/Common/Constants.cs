@@ -15,6 +15,8 @@ namespace Iteedee.BetaDepot.Common
         public const string BUILD_ENVIRONMENT_PRODUCTION = "Production";
 
 
+        public const string APPLICATION_MEMBER_ROLE_ADMINISTRATOR = "ADMINISTRATOR";
+
 
     }
 }

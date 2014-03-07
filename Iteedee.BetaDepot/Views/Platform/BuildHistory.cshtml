@@ -53,7 +53,15 @@
                 <td>@b.UploadedDtm</td>
                 <td><span class="buildNotes glyphicon glyphicon-edit" data-original-title="@b.BuildNotes"></span></td>
                 <td><a href="@b.InstallUrl" class="btn btn-primary btn-sm">Install</a></td>
-                <td><a data-id="@b.BuildId" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
+                @if (Model.CurrentUsersMembershipRole.ToUpper() == Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR)
+                {
+                    <td><a data-id="@b.BuildId" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                
             </tr>
         }   
         </tbody>

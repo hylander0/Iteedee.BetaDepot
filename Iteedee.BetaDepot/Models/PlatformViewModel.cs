@@ -47,6 +47,7 @@ namespace Iteedee.BetaDepot.Models
         public string AppIconUrl { get; set; }
         public string Platform { get; set; }
         public string selectedEnvironment { get; set; }
+        public string CurrentUsersMembershipRole { get; set; }
         public List<BuildHistory> Builds { get; set; }
 
         public class BuildHistory
@@ -97,6 +98,7 @@ namespace Iteedee.BetaDepot.Models
         public int AppId { get; set; }
         public String AppIconUrl { get; set; }
         public String AppName { get; set; }
+        public String CurrentUsersMembershipRole { get; set; }
         public List<PlatformViewTeamMembers.Members> MemberList { get; set; }
 
 

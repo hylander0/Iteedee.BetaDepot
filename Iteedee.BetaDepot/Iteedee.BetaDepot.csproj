@@ -245,6 +245,7 @@
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\vendor\bootstrapValidator.min.js" />
     <Content Include="Views\Platform\Index.cshtml" />
     <Content Include="Views\Platform\BuildHistory.cshtml" />
     <Content Include="Views\Platform\Manage.cshtml" />
@@ -289,7 +290,6 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\vendor\jqBootstrapValidation.js" />
     <Content Include="Scripts\vendor\jquery.fileupload.js" />
     <Content Include="Scripts\vendor\jquery.iframe-transport.js" />
     <Content Include="Scripts\_references.js" />

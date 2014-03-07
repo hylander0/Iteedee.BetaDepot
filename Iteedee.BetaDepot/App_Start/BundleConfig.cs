@@ -29,8 +29,8 @@ namespace Iteedee.BetaDepot
                     .Include("~/Scripts/vendor/jquery.fileupload.js")
                     );
 
-            bundles.Add(new ScriptBundle("~/bundles/jqBootstrapValidation")
-                    .Include("~/Scripts/vendor/jqBootstrapValidation.js")
+            bundles.Add(new ScriptBundle("~/bundles/bootstrapValidator")
+                    .Include("~/Scripts/vendor/bootstrapValidator.min.js")
                     );
 
             bundles.Add(new ScriptBundle("~/bundles/app")

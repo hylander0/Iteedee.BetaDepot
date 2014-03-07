@@ -7,8 +7,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Build History</h2>
-
+<h2>Team Members</h2>
+<input id="hdAppId" type="hidden" value="@Model.AppId" />
 <div class="jumbotron">
 
     <div class="row">
@@ -17,6 +17,12 @@
             <small style="padding-left:20px;">@Model.AppName</small>
         </p>
     </div>
+</div>
+<div class="row">
+    <div class="span12 pull-right" style="text-align:right">
+        <a id="btnAddTeamMember" class="btn btn-primary btn-sm">Add Team Member</a>
+    </div>
+
 </div>
 
 <div class="row">
@@ -43,16 +49,16 @@
                         <td>@b.EmailAddress</td>
                         <td>@b.MembershipRole</td>
                         <td>@b.AssignAppCount</td>
-                        @if (b.UserName.ToLower() == User.Identity.GetUserName().ToLower() 
-                                && b.MembershipRole.ToLower() != Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR)
+                        @if (Model.CurrentUsersMembershipRole.ToUpper() == Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR
+                            && b.UserName.ToLower() != User.Identity.GetUserName().ToLower())
                         {
-                            <td></td>
-                            <td></td>
+                            <td><a data-id="@b.Id" data-currentrole="@b.MembershipRole" class="btn btn-primary btn-sm btnChangeTeamMember">Change Role</a></td> 
+                            <td><a data-id="@b.Id" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
                         }
                         else
                         {
-                            <td><a data-id="@b.Id" class="btn btn-primary btn-sm">ChangeRole</a></td> 
-                            <td><a data-id="@b.Id" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
+                            <td></td>
+                            <td></td>
                         }
                         
                     </tr>
@@ -67,3 +73,179 @@
 
 
 </div>
+
+<div id="modalInviteTeamMember" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Invite a Team Member</h4>
+            </div>
+            <div class="modal-body">
+                <form id="frmGenerateInviteLink">
+                    <div class="form-group">
+                        <label for="txtEmail">Email:</label>
+                        <input id="txtEmail" name="email" class="form-control" placeholder="" required></input>
+                    </div>
+                    <div class="form-group">
+                        <label for="cbxTeamMemberRole">Role:</label>
+                        <select name="TeamMemberRole" id="cbxTeamMemberRole" class="form-control" required>
+                            <option value="">-SELECT-</option>
+                            <option value="@Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR">Administrator</option>
+                            <option value="@Constants.APPLICATION_MEMBER_ROLE_DEVELOPER">Developer</option>
+                            <option value="@Constants.APPLICATION_MEMBER_ROLE_TESTER">Tester</option>
+                        </select>
+                    </div>
+                    <div id="pnlInventLink" class="form-group" hidden>
+                        <label for="txtGeneratedUrl">InviteUrl:</label>
+                        <input id="txtGeneratedUrl" name="url" class="form-control" placeholder="" type="text" readonly style="cursor:text;" />
+                        <small>This url will be valid up to 24 hours after its generation.</small>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnSaveChanges" type="submit" class="btn btn-primary">Get Invite Link</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalTeamMemberRole" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Edit Role</h4>
+            </div>
+            <div class="modal-body">
+                <form id="frmEditRole">
+                    <div class="form-group">
+                        <input id="hdTeamMemberId" type="hidden" />
+                        <label for="cbxEditTeamMemberRole">Role:</label>
+                        <select name="TeamMemberRole" id="cbxEditTeamMemberRole" class="form-control" required>
+                            <option value="@Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR">Administrator</option>
+                            <option value="@Constants.APPLICATION_MEMBER_ROLE_DEVELOPER">Developer</option>
+                            <option value="@Constants.APPLICATION_MEMBER_ROLE_TESTER">Tester</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnCancelChangeRole" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button id="btnSaveRole" type="button" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var init = function () {
+                $("#btnAddTeamMember").click(function () {
+                    setupInviteForm();
+                    $("#modalInviteTeamMember").modal('show');
+                });
+                $("#btnSaveRole").click(function () {
+                    submitRoleChange();
+                });
+                $(".btnChangeTeamMember").click(function () {
+                    $("#modalTeamMemberRole").modal('show');
+                    setupChangeRoleForm($(this).attr("data-id"), $(this).attr("data-currentrole"));
+                });
+                $("#frmGenerateInviteLink").bootstrapValidator({
+                    message: 'This value is not valid',
+                    submitHandler: function (validator, form) {
+                        // validator is the BootstrapValidator instance
+                        // form is the jQuery object present the current form
+                        //form.preventDefault();
+                        submitEmail();
+                        //form.submit();
+                    },
+                    fields: {
+                        email: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'The email address is required and can\'t be empty'
+                                },
+                                emailAddress: {
+                                    message: 'The input is not a valid email address'
+                                }
+                            }
+                        },
+                        TeamMemberRole: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'A team member must be assigned a role'
+                                }
+                            }
+                        }
+                    }
+                });
+                $("#frmGenerateInviteLink").submit(function (e) {
+                    e.preventDefault();
+                });
+            };
+            var submitEmail = function () {
+                $("#pnlInventLink").show();
+                $("#btnSaveChanges").hide();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GenerateInviteUrl", "App")',
+                    data: addAntiForgeryToken({
+                        email: $("#txtEmail").val(),
+                        appId: $("#hdAppId").val(),
+                        assignedRole: $("#cbxTeamMemberRole").val()
+                    }),
+                    success: function (data) {
+                        $("#txtGeneratedUrl").val(data.Url);
+                    },
+                    error: function (errorData) {
+                        alert("An Error ocurred while attempting get invite link.")
+                    }
+                });
+            };
+            var submitRoleChange = function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("UpdateUserRole", "App")',
+                    data: addAntiForgeryToken({
+                        appId: $("#hdAppId").val(),
+                        memberId: $("#hdTeamMemberId").val(),
+                        roleToUpdate: $("#cbxEditTeamMemberRole").val()
+                    }),
+                    success: function (data) {
+                        if (data.Status == "OK")
+                            location.reload();
+                        else
+                            alert(data.Msg);
+
+                    },
+                    error: function (errorData) {
+                        alert("An Error ocurred while attempting update the user role.")
+                    }
+                });
+            };
+            var setupInviteForm = function () {
+                $("#txtEmail").val("");
+                $("#pnlInventLink").hide();
+                $("#txtGeneratedUrl").val("Retrieving...");
+                $("#btnSaveChanges").show();
+                $("#cbxEnvironment").val("");
+
+            };
+            var setupChangeRoleForm = function (teamMemberId, selectedRole) {
+                $("#hdTeamMemberId").val(teamMemberId);
+                $("#cbxEditTeamMemberRole").val(selectedRole);
+            };
+            var addAntiForgeryToken = function (data) {
+                data.__RequestVerificationToken = $('#__AjaxAntiForgeryForm input[name=__RequestVerificationToken]').val();
+                return data;
+            };
+
+            init();
+        });
+    </script>
+}

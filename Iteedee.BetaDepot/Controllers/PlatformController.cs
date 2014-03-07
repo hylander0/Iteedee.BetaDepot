@@ -89,9 +89,15 @@ namespace Iteedee.BetaDepot.Controllers
             Models.PlatformViewAppBuildHistory mdl = new Models.PlatformViewAppBuildHistory();
             if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), appId))
                 throw new HttpException(403, "You are not a team member of this app.");
+
+            string currentUser = User.Identity.GetUserName().ToLower();
             using(var context = new BetaDepot.Repository.BetaDepotContext())
             {
                 Repository.Application app = context.Applications.Where(wa => wa.Id == appId).FirstOrDefault();
+                mdl.CurrentUsersMembershipRole = context.ApplicationTeamMembers
+                                                .Where(w => w.TeamMember.UserName.ToLower() == currentUser
+                                                            && w.ApplicationId == appId).FirstOrDefault().MemberRole;
+
                 List<Repository.ApplicationBuild> builds = context.Builds
                                                                 .Where(w => w.Application.Id == appId
                                                                         && (environment == null || w.Environment.EnvironmentName == environment))
@@ -135,24 +141,25 @@ namespace Iteedee.BetaDepot.Controllers
             {
 
 
-                var apps = (from a in context.Applications
-                            join tm in context.ApplicationTeamMembers on a.Id equals tm.ApplicationId
-                            where tm.TeamMember.UserName == userName
-                                && a.Platform == platform
-                            select a).ToList();
+                List<Repository.Application> apps = (from a in context.Applications
+                                            join tm in context.ApplicationTeamMembers on a.Id equals tm.ApplicationId
+                                            where tm.TeamMember.UserName == userName
+                                                && a.Platform == platform
+                                            select a).ToList();
                 foreach(Repository.Application a in apps)
                 {
+
                     mdl.Apps.Add(new Models.PlatformViewManage.PlatformViewManageApp()
                         {
                             ApplicationIdentifier = a.ApplicationIdentifier,
-                            Id= a.Id,
+                            Id = a.Id,
                             Name = a.Name,
                             Platform = a.Platform,
                             TeamMemberCount = a.AssignedMembers.Count(),
-                            ApplicationRole = a.AssignedMembers.Where(w => w.TeamMember.UserName == userName).FirstOrDefault().MemberRole,
+                            ApplicationRole = a.AssignedMembers.Where(w => w.TeamMember.UserName.ToLower() == userName.ToLower()).FirstOrDefault().MemberRole,
                             UploadedBuildCount = context.Builds.Where(w => w.Application.Id == a.Id).Count(),
-                            AppIconUrl = Platforms.Common.GenerateAppIconUrl(BaseUrl(),a.ApplicationIdentifier)
-                            
+                            AppIconUrl = Platforms.Common.GenerateAppIconUrl(BaseUrl(), a.ApplicationIdentifier)
+
                         });
                 }
             }
@@ -167,9 +174,14 @@ namespace Iteedee.BetaDepot.Controllers
             
             if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), id))
                 throw new HttpException(403, "You are not a team member of this app.");
+
+            string currentUser = User.Identity.GetUserName().ToLower();
+            
             using(var context = new Repository.BetaDepotContext())
             {
-
+                mdl.CurrentUsersMembershipRole = context.ApplicationTeamMembers
+                                                .Where(w => w.TeamMember.UserName.ToLower() == currentUser
+                                                            && w.ApplicationId == id).FirstOrDefault().MemberRole;
                 Repository.Application app = context.Applications.Where(w => w.Id == id).FirstOrDefault();
                 if (app != null)
                 {

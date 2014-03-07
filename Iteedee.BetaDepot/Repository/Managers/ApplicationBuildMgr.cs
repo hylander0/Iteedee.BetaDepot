@@ -153,6 +153,22 @@ namespace Iteedee.BetaDepot.Repository.Managers
             }
             return retval;
         }
+        public static bool IsUserAnAppTeamMemberInRole(string UserName, int AppId, string Role)
+        {
+            bool retval = false;
+            using (var context = new Repository.BetaDepotContext())
+            {
+                var apps = (from a in context.Applications
+                            join tm in context.ApplicationTeamMembers on a.Id equals tm.ApplicationId
+                            where tm.TeamMember.UserName.ToLower() == UserName.ToLower()
+                                && a.Id == AppId
+                                && tm.MemberRole.ToUpper() == Role.ToUpper()
+                            select a).ToList();
+                if (apps != null)
+                    retval = apps.Count() > 0;
+            }
+            return retval;
+        }
         public static bool IsUserAnAppTeamMember(string UserName, int AppId, string role)
         {
             bool retval = false;

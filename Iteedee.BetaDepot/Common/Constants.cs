@@ -16,6 +16,8 @@ namespace Iteedee.BetaDepot.Common
 
 
         public const string APPLICATION_MEMBER_ROLE_ADMINISTRATOR = "ADMINISTRATOR";
+        public const string APPLICATION_MEMBER_ROLE_DEVELOPER = "DEVELOPER";
+        public const string APPLICATION_MEMBER_ROLE_TESTER = "TESTER";
 
 
     }

@@ -147,5 +147,155 @@ namespace Iteedee.BetaDepot.Controllers
 
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult GenerateInviteUrl(string email, string assignedRole, int appId)
+        {
+            string url = "";
+            string msg = "OK";
+            bool isAlreadyTeamMember = Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(email, appId);
+            if(!isAlreadyTeamMember)
+            {
+                int TeamMemberId = -1;
+                using(var context = new Repository.BetaDepotContext())
+                {
+                    Application app = context.Applications.Where(w => w.Id == appId).FirstOrDefault();
+                    TeamMember tm = context.TeamMembers.Where(w => w.UserName == email).FirstOrDefault();
+                    if(tm == null)
+                    {
+                        tm = new TeamMember()
+                        {
+                            EmailAddress = email,
+                            UserName = email
+                        };
+                        context.TeamMembers.Add(tm);
+                    }
+                    context.SaveChanges();
+                    TeamMemberId = tm.Id;
+                    int timestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                    string uHash = Common.Functions.GenerateMD5Hash(string.Format("{0}|{1}|{2}", app.ApplicationIdentifier.ToLower(), email.ToLower(), timestamp));
+                    string rHash = Common.Functions.GenerateMD5Hash(string.Format("{0}|{1}|{2}", app.ApplicationIdentifier.ToLower(), assignedRole.ToLower(), timestamp));
+                    url = string.Format("{0}App/AcceptInvite/?uHash={1}&rHash={2}&appId={3}&userName={4}", BaseUrl(), uHash, rHash, app.Id, Url.Encode(email.ToLower()));
+                }
+            }
+            else
+                msg = "Error";
+
+            return Json(new {
+                Msg = msg,
+                Url = url
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult UpdateUserRole(int appId, int memberId, string roleToUpdate)
+        {
+            if(!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), appId,Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR))
+            {
+                return Json(new {
+                    Status = "Error",
+                    Msg = "You are not a administrator of this app"
+                });
+            }
+
+            using(var context = new Repository.BetaDepotContext())
+            {
+
+                ApplicationTeamMember membership = context.ApplicationTeamMembers
+                                            .Where(w => w.TeamMemberId == memberId
+                                                        && w.ApplicationId == appId)
+                                            .FirstOrDefault();
+
+                if (membership != null)
+                    membership.MemberRole = roleToUpdate.ToUpper();
+
+                context.SaveChanges();
+            }
+            return Json(new
+            {
+                Status = "OK",
+                Msg = ""
+            });
+
+        }
+
+        [HttpGet]
+        public ActionResult AcceptInvite(string uHash, string rHash, int appId, string userName)
+        {
+            string platform = string.Empty;
+            if(uHash != null
+                && rHash != null
+                && appId > 0
+                && userName != null)
+            {
+                using(var context = new Repository.BetaDepotContext())
+                {
+                    Application app = context.Applications.Where(w => w.Id == appId).FirstOrDefault();
+                    platform = app.Platform;
+                    TeamMember member = context.TeamMembers.Where(w => w.UserName == userName).FirstOrDefault();
+                    if (app != null && member != null)
+                    {
+                        if(isUserInviteTokenValid(app.ApplicationIdentifier, userName, uHash))
+                        {
+                            if(Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(userName, appId))
+                                throw new HttpException(400, "Your invite is invalid.");
+
+                            string role = getRoleFromRoleInviteToken(app.ApplicationIdentifier, rHash);
+                            if(role != null)
+                            {
+                                
+
+                                ApplicationTeamMember membership =  new ApplicationTeamMember()
+                                        {
+                                            TeamMember = member,
+                                            MemberRole = role
+                                        };
+
+                                app.AssignedMembers.Add(membership);
+                                context.SaveChanges();
+                            }
+                            else
+                                throw new HttpException(400, "Your invite is invalid.");
+                        }
+                    }
+                    else
+                        throw new HttpException(400, "Your invite is invalid.");
+
+                }
+            }
+            
+
+            return RedirectToAction("Index", "Platform", new { id = platform });
+
+        }
+        private bool isUserInviteTokenValid(string appIdentifier, string userName, string uHash)
+        {
+            int currentTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            for (int i = currentTimestamp; i > (currentTimestamp - 86400); i--)
+            {
+                if (uHash.ToLower() == Common.Functions.GenerateMD5Hash(string.Format("{0}|{1}|{2}", appIdentifier.ToLower(), userName.ToLower(), i)))
+                    return true;
+            }
+            return false;
+        }
+        private string getRoleFromRoleInviteToken(string appIdentifier, string uHash)
+        {
+            int currentTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            string[] roles = { 
+                                 Common.Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR,  
+                                 Common.Constants.APPLICATION_MEMBER_ROLE_DEVELOPER,  
+                                 Common.Constants.APPLICATION_MEMBER_ROLE_TESTER
+                             };
+            for (int i = currentTimestamp; i > (currentTimestamp - 86400); i--)
+            {
+                foreach(string role in roles)
+                {
+                    if (uHash.ToLower() == Common.Functions.GenerateMD5Hash(string.Format("{0}|{1}|{2}", appIdentifier.ToLower(), role.ToLower(), i)))
+                        return role;
+                }
+            }
+            return null;
+        }
 	}
 }

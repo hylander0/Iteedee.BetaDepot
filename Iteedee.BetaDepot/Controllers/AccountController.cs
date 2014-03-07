@@ -88,12 +88,24 @@ namespace Iteedee.BetaDepot.Controllers
                     //Create user as a team member
                     using (var context = new Repository.BetaDepotContext())
                     {
-                        context.TeamMembers.Add(new Repository.TeamMember() {
-                            EmailAddress = model.UserName,
-                            UserName = model.UserName,
-                            FirstName = model.FirstName,
-                            LastName = model.LastName
-                        });
+                        var tm = context.TeamMembers.Where(w => w.UserName == model.UserName).FirstOrDefault();
+                        if (tm == null)
+                        {
+                            context.TeamMembers.Add(new Repository.TeamMember()
+                            {
+                                EmailAddress = model.UserName,
+                                UserName = model.UserName,
+                                FirstName = model.FirstName,
+                                LastName = model.LastName
+                            });
+                           
+                        }
+                        else
+                        {
+                            tm.FirstName = model.FirstName;
+                            tm.LastName = model.LastName;
+                            tm.EmailAddress = model.UserName;
+                        }
                         context.SaveChanges();
                     }
 

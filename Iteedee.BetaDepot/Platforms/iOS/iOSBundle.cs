@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace Iteedee.BetaDepot.Platforms.iOS
@@ -61,7 +62,8 @@ namespace Iteedee.BetaDepot.Platforms.iOS
 
                 while ((item = zip.GetNextEntry()) != null)
                 {
-                    if (item.Name.ToLower().EndsWith("/info.plist"))
+                    Match match = Regex.Match(item.Name.ToLower(), @"Payload/([A-Za-z0-9\-. ]+)\/info.plist$", RegexOptions.IgnoreCase);
+                    if (match.Success)
                     {
                         byte[] bytes = new byte[50 * 1024];
 
@@ -143,9 +145,9 @@ namespace Iteedee.BetaDepot.Platforms.iOS
             {
                 iconFiles.ForEach(f =>
                 {
-                    if (GetRetina && f.Contains("@2x"))
+                    if (GetRetina && f.ToLower().Contains("icon@2x"))
                         fileName = f;
-                    else if (!GetRetina && !f.Contains("@2x"))
+                    else if (!GetRetina && !f.ToLower().Contains("icon@2x"))
                         fileName = f;
                 });
             }
@@ -165,22 +167,42 @@ namespace Iteedee.BetaDepot.Platforms.iOS
 
                 while ((item = zip.GetNextEntry()) != null)
                 {
-                    if (item.Name.ToLower().EndsWith(string.Format("/{0}", fileName.ToLower())))
+                    Match match = Regex.Match(item.Name.ToLower(), string.Format(@"Payload/([A-Za-z0-9\-.]+)\/{0}", fileName.ToLower()), RegexOptions.IgnoreCase);
+                    if (match.Success)
                     {
-                        //byte[] bytes = new byte[50 * 1024];
-
-                        byte[] bytes = new byte[50 * 1024];
-
-                        using(Stream strm = zipfile.GetInputStream(item))
+                       
+                        using (Stream strm = zipfile.GetInputStream(item))
                         {
-                            int size = strm.Read(bytes, 0, bytes.Length);
 
-                            using (BinaryReader s = new BinaryReader(strm))
+                            //int size = strm.Read(bytes, 0, bytes.Length);
+
+                            //using (BinaryReader s = new BinaryReader(strm))
+                            //{
+                            //    byte[] bytes2 = new byte[size];
+                            //    Array.Copy(bytes, bytes2, size);
+                            //    using (MemoryStream input = new MemoryStream(bytes2))
+                            //    {
+                            //        using (FileStream output = File.Create(Path.Combine(iconDirectory, uniqueIconFileName)))
+                            //        {
+                            //            try
+                            //            {
+                            //                PNGDecrush.PNGDecrusher.Decrush(strm, output);
+                            //            }
+                            //            catch (InvalidDataException ex)
+                            //            {
+                            //                //Continue, unable to resolve icon data
+                            //            }
+                            //        }
+
+                            //    }
+                            //}
+
+
+                            byte[] ret = null;
+                            ret = new byte[item.Size];
+                            strm.Read(ret, 0, ret.Length);
+                            using (MemoryStream input = new MemoryStream(ret))
                             {
-                                byte[] bytes2 = new byte[size];
-                                Array.Copy(bytes, bytes2, size);
-
-                                using (MemoryStream input = new MemoryStream(bytes2))
                                 using (FileStream output = File.Create(Path.Combine(iconDirectory, uniqueIconFileName)))
                                 {
                                     try
@@ -192,8 +214,24 @@ namespace Iteedee.BetaDepot.Platforms.iOS
                                         //Continue, unable to resolve icon data
                                     }
                                 }
-
                             }
+
+                            //using (MemoryStream input = new MemoryStream())
+                            //{
+
+                            //    using (FileStream output = File.Create(Path.Combine(iconDirectory, uniqueIconFileName)))
+                            //    {
+                            //        try
+                            //        {
+                            //            PNGDecrush.PNGDecrusher.Decrush(strm, output);
+                            //        }
+                            //        catch (InvalidDataException ex)
+                            //        {
+                            //            //Continue, unable to resolve icon data
+                            //        }
+                            //    }
+                            //}
+                          
                         }
                       
 

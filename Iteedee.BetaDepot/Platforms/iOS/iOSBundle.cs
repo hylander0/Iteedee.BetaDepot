@@ -61,7 +61,7 @@ namespace Iteedee.BetaDepot.Platforms.iOS
 
                 while ((item = zip.GetNextEntry()) != null)
                 {
-                    if (item.Name.ToLower() == "payload/mymc.app/info.plist")
+                    if (item.Name.ToLower().EndsWith("/info.plist"))
                     {
                         byte[] bytes = new byte[50 * 1024];
 
@@ -94,7 +94,7 @@ namespace Iteedee.BetaDepot.Platforms.iOS
             List<String> retval = new List<string>();
             Dictionary<string,object> element;
             //if(((Dictionary<string,object>)((Dictionary<string,object>)plist["CFBundleIcons"])["CFBundlePrimaryIcon"])["CFBundleIconFiles"])
-            if (plist["CFBundleIcons"] != null && plist["CFBundleIcons"] is Dictionary<string, object>)
+            if (plist.ContainsKey("CFBundleIcons") && plist["CFBundleIcons"] is Dictionary<string, object>)
             { 
                 element = ((Dictionary<string, object>)plist["CFBundleIcons"]);
                 if(element["CFBundlePrimaryIcon"] != null && element["CFBundlePrimaryIcon"] is Dictionary<string, object>)
@@ -108,6 +108,10 @@ namespace Iteedee.BetaDepot.Platforms.iOS
                         }
                     }
                 }
+            }
+            else if (plist.ContainsKey("CFBundleIconFile") && plist["CFBundleIconFile"] is String)
+            {
+                retval.Add((String)plist["CFBundleIconFile"]);
             }
 
             return retval;
@@ -161,7 +165,7 @@ namespace Iteedee.BetaDepot.Platforms.iOS
 
                 while ((item = zip.GetNextEntry()) != null)
                 {
-                    if (item.Name.ToLower() == string.Format("payload/mymc.app/{0}", fileName.ToLower()))
+                    if (item.Name.ToLower().EndsWith(string.Format("/{0}", fileName.ToLower())))
                     {
                         //byte[] bytes = new byte[50 * 1024];
 
@@ -185,7 +189,7 @@ namespace Iteedee.BetaDepot.Platforms.iOS
                                     }
                                     catch (InvalidDataException ex)
                                     {
-                                        throw ex;
+                                        //Continue, unable to resolve icon data
                                     }
                                 }
 

@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "InviteRedirect";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <h1>Beta Depot</h1>
+    <p class="lead">Congrat's you have been invited to the team!</p>
+    
+    @Html.ActionLink("Login", "Login", new { controller = "Account", returnUrl = HttpContext.Current.Request.RawUrl }, new { @class = "btn btn-primary btn-large"})
+    Or
+    @Html.ActionLink("Register", "Register", new { controller = "Account", returnUrl = HttpContext.Current.Request.RawUrl }, new { @class = "btn btn-primary btn-large" })
+</div>

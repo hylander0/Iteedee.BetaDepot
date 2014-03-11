@@ -327,6 +327,21 @@ namespace Iteedee.BetaDepot.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult InviteRedirect(string uHash, string rHash, string appId, string userName)
+        {
+            if(User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("AcceptInvite", "App", new { uHash = uHash, rHash = rHash, appId = appId, userName = userName });
+            }
+            else
+            {
+
+            }
+            return View();
+        }
+
         [ChildActionOnly]
         public ActionResult RemoveAccountList()
         {

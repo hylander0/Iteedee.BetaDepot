@@ -49,8 +49,8 @@ namespace Iteedee.BetaDepot.Controllers
                                  AppId = a.Id,
                                  AppName = a.Name,
                                  Environment = b.Environment.EnvironmentName,
-                                 AppIconUrl = string.Format("{0}App/AppIconImage/?AppUniqueIdentifier={1}", BaseUrl(), a.ApplicationIdentifier),
-                                 InstallUrl = Platforms.Common.GeneratePackageInstallUrl(BaseUrl(), "App", "Download", a.Platform, b.UniqueIdentifier.ToString()),
+                                 AppIconUrl = Platforms.Common.GenerateAppIconUrl(Url.Content("~"), a.ApplicationIdentifier),
+                                 InstallUrl = Platforms.Common.GeneratePackageInstallUrl(Url.Content("~"), "App", "Download", a.Platform, b.UniqueIdentifier.ToString()),
                                  Platform = platform,
                                  UploadedByName = String.Format("{0} {1}", b.AddedBy.FirstName, b.AddedBy.LastName),
                                  UploadedDtm = Common.Functions.GetPrettyDate(b.AddedDtm.ToLocalTime(), "MM/dd/yy"),
@@ -104,7 +104,7 @@ namespace Iteedee.BetaDepot.Controllers
                                                                 .OrderByDescending(o => o.AddedDtm)
                                                                 .ToList();
 
-                mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(BaseUrl(), app.ApplicationIdentifier);
+                mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(Url.Content("~"), app.ApplicationIdentifier);
                 mdl.AppId = appId;
                 mdl.AppName = app.Name;
                 mdl.Platform = app.Platform;
@@ -118,7 +118,7 @@ namespace Iteedee.BetaDepot.Controllers
                             UploadedByName = String.Format("{0} {1}", f.AddedBy.FirstName, f.AddedBy.LastName),
                             UploadedDtm = Common.Functions.GetPrettyDate(f.AddedDtm.ToLocalTime(), "MM/dd/yy"),
                             VersionNumber = string.IsNullOrEmpty(f.versionCode) ? f.versionNumber : string.Format("{0} ({1})", f.versionNumber, f.versionCode),
-                            InstallUrl = Platforms.Common.GeneratePackageInstallUrl(BaseUrl(), "App", "Download", f.Platform, f.UniqueIdentifier.ToString())
+                            InstallUrl = Platforms.Common.GeneratePackageInstallUrl(Url.Content("~"), "App", "Download", f.Platform, f.UniqueIdentifier.ToString())
                             
                         });
                 });
@@ -158,7 +158,7 @@ namespace Iteedee.BetaDepot.Controllers
                             TeamMemberCount = a.AssignedMembers.Count(),
                             ApplicationRole = a.AssignedMembers.Where(w => w.TeamMember.UserName.ToLower() == userName.ToLower()).FirstOrDefault().MemberRole,
                             UploadedBuildCount = context.Builds.Where(w => w.Application.Id == a.Id).Count(),
-                            AppIconUrl = Platforms.Common.GenerateAppIconUrl(BaseUrl(), a.ApplicationIdentifier)
+                            AppIconUrl = Platforms.Common.GenerateAppIconUrl(Url.Content("~"), a.ApplicationIdentifier)
 
                         });
                 }
@@ -187,7 +187,7 @@ namespace Iteedee.BetaDepot.Controllers
                 {
                     mdl.AppId = app.Id;
                     mdl.AppName = app.Name;
-                    mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(BaseUrl(), app.ApplicationIdentifier);
+                    mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(Url.Content("~"), app.ApplicationIdentifier);
                 }
                 else
                     return View(mdl);
@@ -222,14 +222,6 @@ namespace Iteedee.BetaDepot.Controllers
             }
             return View(mdl);
         }
-        private string BaseUrl()
-        {
-            //return string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
-            //return string.Format("{0}://{1}{2}", Request.Url.Scheme, "JustinHyland-PC.na.awwweb.com", Url.Content("~"));
-            if (Request.Url.Port == 80)
-                return string.Format("{0}://{1}{2}", Request.Url.Scheme, "localhost", Url.Content("~"));
-            else
-                return string.Format("{0}://{1}:{2}{3}", Request.Url.Scheme, "localhost", Request.Url.Port, Url.Content("~"));
-        }
+
 	}
 }

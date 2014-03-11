@@ -50,6 +50,7 @@ TestResult.xml
 *.scc
 *.apk
 *.ipa
+*.pubxml
 
 
 # Chutzpah Test files

@@ -17,6 +17,7 @@ namespace Iteedee.BetaDepot.Controllers
     [Authorize]
     public class AppController : Controller
     {
+        [AllowAnonymous]
         public FileResult Download(string FileName, string Platform)
         {
             string fileExtension = Path.GetExtension(FileName);
@@ -27,10 +28,12 @@ namespace Iteedee.BetaDepot.Controllers
                 string ipaFilePath = Path.Combine(Server.MapPath("~/App_Data/Files"), ipaFileName);
 
 
-
+                string baseUrl = System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"];
+                if (baseUrl == null)
+                    baseUrl = "http://localhost/";
                 string xml = Platforms.iOS.iOSBundle.GenerateBundlesSoftwarePackagePlist(
                     ipaFilePath,
-                   string.Format("{0}App/Download?FileName={1}", BaseUrl(), ipaFileName));
+                   string.Format("{0}App/Download?FileName={1}", baseUrl, ipaFileName));
 
                 var bytes = Encoding.UTF8.GetBytes(xml);
                 var result = new FileContentResult(bytes, System.Net.Mime.MediaTypeNames.Text.Xml);
@@ -61,15 +64,15 @@ namespace Iteedee.BetaDepot.Controllers
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Image.Jpeg, filePath);
         }
 
-        private string BaseUrl()
-        {
-            //return string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
-            //return string.Format("{0}://{1}{2}", Request.Url.Scheme, "JustinHyland-PC.na.awwweb.com", Url.Content("~"));
-            if (Request.Url.Port == 80)
-                return string.Format("{0}://{1}{2}", Request.Url.Scheme, "localhost", Url.Content("~"));
-            else
-                return string.Format("{0}://{1}:{2}{3}", Request.Url.Scheme, "localhost", Request.Url.Port, Url.Content("~"));
-        }
+        //private string BaseUrl()
+        //{
+        //    //return string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
+        //    //return string.Format("{0}://{1}{2}", Request.Url.Scheme, "JustinHyland-PC.na.awwweb.com", Url.Content("~"));
+        //    if (Request.Url.Port == 80)
+        //        return string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
+        //    else
+        //        return string.Format("{0}://{1}:{2}{3}", Request.Url.Scheme, "localhost", Request.Url.Port, Url.Content("~"));
+        //}
         [HttpPost]
         [ActionName("SaveBuild")]
         public ActionResult SaveBuild(string BuildNotes, string FileName, int EnvironmentId)
@@ -175,7 +178,12 @@ namespace Iteedee.BetaDepot.Controllers
                     int timestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
                     string uHash = Common.Functions.GenerateMD5Hash(string.Format("{0}|{1}|{2}", app.ApplicationIdentifier.ToLower(), email.ToLower(), timestamp));
                     string rHash = Common.Functions.GenerateMD5Hash(string.Format("{0}|{1}|{2}", app.ApplicationIdentifier.ToLower(), assignedRole.ToLower(), timestamp));
-                    url = string.Format("{0}App/AcceptInvite/?uHash={1}&rHash={2}&appId={3}&userName={4}", BaseUrl(), uHash, rHash, app.Id, Url.Encode(email.ToLower()));
+
+                    string baseUrl = System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"];
+                    if (baseUrl == null)
+                        baseUrl = "http://localhost/";
+                    baseUrl = String.Format("{0}{1}", baseUrl, Url.Content("~"));
+                    url = string.Format("{0}Account/InviteRedirect/?uHash={1}&rHash={2}&appId={3}&userName={4}", baseUrl, uHash, rHash, app.Id, Url.Encode(email.ToLower()));
                 }
             }
             else

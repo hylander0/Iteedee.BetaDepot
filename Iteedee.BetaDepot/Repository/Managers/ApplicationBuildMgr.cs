@@ -14,6 +14,7 @@ namespace Iteedee.BetaDepot.Repository.Managers
         public static void SaveBuild(string BuildNotes, string FilePath, string CurrentUserName, int environmentId)
         {
             string BuildType = Platforms.Common.GetFilesBuildPlatform(Path.GetFileName(FilePath));
+            Guid uniqueBuildId = new Guid(System.IO.Path.GetFileNameWithoutExtension(FilePath));
             if (BuildType.ToUpper() == Constants.BUILD_PLATFORM_ANDROID)
             {
                 Platforms.Android.AndroidManifestData data = Platforms.Android.AndroidPackage.GetManifestData(FilePath);
@@ -25,7 +26,7 @@ namespace Iteedee.BetaDepot.Repository.Managers
                     {
                         AddedDtm = DateTime.UtcNow,
                         Application = context.Applications.Where(w => w.ApplicationIdentifier == data.PackageName).FirstOrDefault(),
-                        UniqueIdentifier = Guid.NewGuid(),
+                        UniqueIdentifier = uniqueBuildId,
                         Notes = BuildNotes,
                         versionNumber = data.VersionName,
                         versionCode = data.VersionCode,

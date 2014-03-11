@@ -32,7 +32,8 @@
 <div class="row">
         @if (User.Identity.IsAuthenticated)
         {
-            if (Model == null)
+            <h2>PICK A Platform up top or upload a build.</h2>
+            @*if (Model == null)
             {
                 <h2>PICK A Platform up top or upload a build.</h2>
             }
@@ -75,7 +76,7 @@
                         }
                     </tbody>
                 </table>
-            }
+            }*@
 
         }
 
@@ -157,90 +158,100 @@
 
     @section Scripts {
         <script type="text/javascript">
-            $(document).ready(function () {
-                var init = function () {
+    $(document).ready(function () {
+        var init = function () {
+            if(getMobileType() == 'iphone')
+                window.location = '@Url.Action("Index", "Platform", new { id = "IOS" })'
+            else if (getMobileType() == 'android')
+                window.location = '@Url.Action("Index", "Platform", new { id = "ANDROID" })'
+        };
+        var getMobileType = function () {
+            var uagent = navigator.userAgent.toLowerCase();
+            if (uagent.search("iphone") > -1)
+                return "iphone";
+            if (uagent.search("android") > -1)
+                return "android";
+            return "other";
+        };
+        $("#btnUploadBuild").click(function () {
+            $("#modalUploadBuild").modal('show');
+        });
 
-                };
-
-                $("#btnUploadBuild").click(function () {
-                    $("#modalUploadBuild").modal('show');
+        //File UPload
+        $(document).on('change', '.btn-file :file', function () {
+            var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+        $('#fileupload').fileupload({
+            dataType: 'json',
+            url: '@Url.Action("Upload", "App")',
+            start: function (e) {
+                $("#progress").addClass("active");
+            },
+            done: function (e, data) {
+                $("#progress").removeClass("active");
+                $('#progress .progress-bar').text("File Uploaded!")
+                $.each(data.result, function (index, file) {
+                    $('<p/>').text(file.name).appendTo(document.body);
                 });
+                //data.result
+                if (data.result.Status == "OK") {
+                    $("#pnlUploadFileInfo").removeAttr("hidden");
+                    $("#txtFileName").val(data.result.FileName);
+                    $("#lblPackageName").text(data.result.PackageName);
+                    $("#lblVersionName").text(data.result.VersionName);
+                    $("#lblAppName").text(data.result.AppName);
 
-                //File UPload
-                $(document).on('change', '.btn-file :file', function () {
-                    var input = $(this),
-                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                    input.trigger('fileselect', [numFiles, label]);
-                });
-                $('#fileupload').fileupload({
-                    dataType: 'json',
-                    url: '@Url.Action("Upload", "App")',
-                    start: function (e) {
-                        $("#progress").addClass("active");
-                    },
-                    done: function (e, data) {
-                        $("#progress").removeClass("active");
-                        $('#progress .progress-bar').text("File Uploaded!")
-                        $.each(data.result, function (index, file) {
-                            $('<p/>').text(file.name).appendTo(document.body);
-                        });
-                        //data.result
-                        if (data.result.Status == "OK") {
-                            $("#pnlUploadFileInfo").removeAttr("hidden");
-                            $("#txtFileName").val(data.result.FileName);
-                            $("#lblPackageName").text(data.result.PackageName);
-                            $("#lblVersionName").text(data.result.VersionName);
-                            $("#lblAppName").text(data.result.AppName);
-
-                        }
-                        else {
-                            $("#pnlUploadFileInfo").attr("hidden");
-                            alert(data.result.Message);
-                        }
-
-                    },
-                    progressall: function (e, data) {
-
-                        var progress = parseInt(data.loaded / data.total * 100, 10);
-                        $('#progress .progress-bar').text(progress + "%")
-                        $('#progress .progress-bar').css(
-                            'width',
-                            progress + '%'
-                        );
-                        //$("#hdFileName").val(data);
-
-                    }
-                });
-                $("#frmUploadBuild").submit(function () {
-                    if ($("#txtFileName").val().length == 0) {
-                        alert("You must select and upload a build file.");
-                        return false;
-                    }
-                    return true;
-
-                });
-                $("#btnCancelBuild").click(function () {
-
-
-                    resetForm();
-                    //$("#modalUploadBuild").modal('hide');
-
-                });
-
-                var resetForm = function () {
-                    $("#txtFileName").val("");
-                    $("#lblPackageName").text("");
-                    $("#lblVersionName").text("");
-                    $("#lblAppName").text("");
-                    $("#txtBuildNotes").val("");
-                    $("#cbxEnvironment").val("");
+                }
+                else {
                     $("#pnlUploadFileInfo").attr("hidden");
+                    alert(data.result.Message);
+                }
 
-                    $('#progress .progress-bar').css('width', '0%');
-                };
+            },
+            progressall: function (e, data) {
 
-                init();
-            });
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('#progress .progress-bar').text(progress + "%")
+                $('#progress .progress-bar').css(
+                    'width',
+                    progress + '%'
+                );
+                //$("#hdFileName").val(data);
+
+            }
+        });
+        $("#frmUploadBuild").submit(function () {
+            if ($("#txtFileName").val().length == 0) {
+                alert("You must select and upload a build file.");
+                return false;
+            }
+            return true;
+
+        });
+        $("#btnCancelBuild").click(function () {
+
+
+            resetForm();
+            //$("#modalUploadBuild").modal('hide');
+
+        });
+
+        var resetForm = function () {
+            $("#txtFileName").val("");
+            $("#lblPackageName").text("");
+            $("#lblVersionName").text("");
+            $("#lblAppName").text("");
+            $("#txtBuildNotes").val("");
+            $("#cbxEnvironment").val("");
+            $("#pnlUploadFileInfo").attr("hidden");
+
+            $('#progress .progress-bar').css('width', '0%');
+        };
+
+        init();
+    });
         </script>
     }

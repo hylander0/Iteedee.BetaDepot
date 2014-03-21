@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
@@ -14,7 +15,8 @@ namespace Iteedee.BetaDepot.Repository
         public String LastName { get; set; }
         public String UserName { get; set; }
         public String EmailAddress { get; set; }
-
+        [DefaultValue(false)]
+        public bool IsSystemUser { get; set; }
         public virtual ICollection<Application> AssignedApplications { get; set; }
 
 

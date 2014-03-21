@@ -16,6 +16,8 @@ namespace Iteedee.BetaDepot.Repository.Migrations
         {
             AutomaticMigrationsEnabled = true;
             AutomaticMigrationDataLossAllowed = true;    //TODO: REMOVE
+            MigrationsDirectory = "Repository\\Migrations";
+
 
         }
 
@@ -41,6 +43,19 @@ namespace Iteedee.BetaDepot.Repository.Migrations
                 EnvironmentName = Constants.BUILD_ENVIRONMENT_PRODUCTION
 
             });
+
+            //This user is a default user that
+            if (Context.TeamMembers.Where(w => w.UserName.ToLower() == "ci@betadepot.iteedee.com").FirstOrDefault() == null)
+                Context.TeamMembers.Add(new TeamMember()
+                {
+                    EmailAddress = "CI@betadepot.iteedee.com",
+                    UserName = "CI@betadepot.iteedee.com",
+                    FirstName = "Continuous",
+                    LastName = "Integration",
+                    IsSystemUser = true
+                });
+
+
             Context.SaveChanges();
         }
 

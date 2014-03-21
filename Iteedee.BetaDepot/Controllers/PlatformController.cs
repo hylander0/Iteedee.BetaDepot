@@ -165,7 +165,118 @@ namespace Iteedee.BetaDepot.Controllers
             }
             return View(mdl);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult GenerateNewTokenForApp(int id)
+        {
+            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), id))
+                throw new HttpException(403, "You are not a team member of this app.");
+            String token = string.Empty;
+            try
+            {
+                using (var context = new Repository.BetaDepotContext())
+                {
+                    Repository.Application app = context.Applications.Where(w => w.Id == id).FirstOrDefault();
+                    int currentTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                    token = Common.Functions.GenerateMD5Hash(string.Format("apptoken|{0}|{1}", app.ApplicationIdentifier.ToLower(), currentTimestamp));
+                    app.AppToken = token;
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Msg = Common.Constants.APPLICATION_JSON_RESULT_ERROR });
+            }
 
+
+            return Json(new 
+                {
+                    Msg = Common.Constants.APPLICATION_JSON_RESULT_SUCCESS,
+                    AppToken = token
+                }
+            );
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ConfigureAppForCI(int id, bool shouldConfigure)
+        {
+            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), id))
+                throw new HttpException(403, "You are not a team member of this app.");
+
+            Repository.TeamMember CIUser = Repository.Managers.ApplicationMgr.GetSystemCIUser();
+            try
+            {
+                if (shouldConfigure)
+                {
+                    //Check to make sure the CI user is not already a member of the APP
+                    if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(CIUser.UserName, id))
+                    {
+                        using (var context = new Repository.BetaDepotContext())
+                        {
+                            Repository.Application app = context.Applications.Where(w => w.Id == id).FirstOrDefault();
+                            Repository.ApplicationTeamMember membership = new Repository.ApplicationTeamMember()
+                            {
+                                TeamMember = CIUser,
+                                MemberRole = Common.Constants.APPLICATION_MEMBER_ROLE_CONTINUOUS_INTEGRATION
+                            };
+
+                            app.AssignedMembers.Add(membership);
+                            context.SaveChanges();
+                        }
+                    }
+                }
+                else
+                {
+                    //Check to make sure the CI user is not already a member of the APP
+                    if (Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), id))
+                    {
+                        using (var context = new Repository.BetaDepotContext())
+                        {
+                            Repository.Application app = context.Applications.Where(w => w.Id == id).FirstOrDefault();
+                            app.AppToken = null;
+                            Repository.ApplicationTeamMember membership = context.ApplicationTeamMembers
+                                                                                .Where(w => w.TeamMember.UserName.ToLower() == CIUser.UserName)
+                                                                                .FirstOrDefault();
+
+                            app.AssignedMembers.Remove(membership);
+                            context.SaveChanges();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Msg = Common.Constants.APPLICATION_JSON_RESULT_ERROR });
+            }
+
+
+            return Json(new { Msg = Common.Constants.APPLICATION_JSON_RESULT_SUCCESS });
+        }
+        public ActionResult ContinuousIntegration(int id, string platform)
+        {
+            Models.PlatformContinuousIntegration mdl = new Models.PlatformContinuousIntegration();
+
+            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), id))
+                throw new HttpException(403, "You are not a team member of this app.");
+
+            string currentUser = User.Identity.GetUserName().ToLower();
+
+            using (var context = new Repository.BetaDepotContext())
+            {
+                Repository.Application app = context.Applications.Where(w => w.Id == id).FirstOrDefault();
+                if (app != null)
+                {
+                    mdl.AppId = app.Id;
+                    mdl.AppName = app.Name;
+                    mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(Url.Content("~"), app.ApplicationIdentifier);
+                    mdl.AppToken = app.AppToken;
+                    Repository.TeamMember CIUser = Repository.Managers.ApplicationMgr.GetSystemCIUser();
+                    mdl.IsContinuousIntegrationConfigured = Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(CIUser.UserName, id);
+                }
+            }
+            
+            return View(mdl);
+        }
         public ActionResult TeamMembers(int id, string platform)
         {
             Models.PlatformViewTeamMembers mdl = new Models.PlatformViewTeamMembers();

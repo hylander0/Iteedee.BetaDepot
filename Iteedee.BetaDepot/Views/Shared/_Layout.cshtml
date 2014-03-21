@@ -1,8 +1,17 @@
 ﻿@using Iteedee.BetaDepot.Common
 @using MvcSiteMapProvider.Web.Html
+
+@functions{
+    public static string GetApplicationBaseUrl()
+    {
+        var hlr = new UrlHelper(HttpContext.Current.Request.RequestContext);
+        return string.Format("{0}://{1}{2}", HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Authority, hlr.Content("~"));
+    }
+}
 <!DOCTYPE html>
 <html>
 <head>
+    <base href="@GetApplicationBaseUrl()" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Beta Depot</title>
@@ -11,7 +20,7 @@
 
 </head>
 <body>
-    <form id="__AjaxAntiForgeryForm" action="#" method="post">@Html.AntiForgeryToken()</form> 
+    <form id="__AjaxAntiForgeryForm" action="#" method="post">@Html.AntiForgeryToken()</form>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -20,7 +29,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                
+
                 <a class="navbar-brand" href="~/"><img src="~/Content/Images/logo.png" height="30" alt="Beta Depot" /></a>
                 @*@Html.ActionLink("Beta Depot", "Index", "Home", null, new { @class = "navbar-brand" })*@
             </div>

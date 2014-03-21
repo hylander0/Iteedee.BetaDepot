@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewBag.Title = "Continuous Integration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Continuous Integration</h2>
+<input id="hdAppId" type="hidden" value="@Model.AppId" />
+<div class="jumbotron">
+
+    <div class="row">
+        <img class="pull-left" src="@Model.AppIconUrl" alt="@Model.AppName" />
+        <p>
+            <small style="padding-left:20px;">@Model.AppName</small>
+        </p>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="well well-lg">
+        @if(Model.IsContinuousIntegrationConfigured)
+        {
+        <div class="form-group">
+            This app is Enabled for Continuous Integration.
+        </div>
+        <div class="form-group">
+            <label for="txtGeneratedToken">App Token:</label>
+            <div class="form-inline">
+                <input id="txtGeneratedToken" name="url" class="form-control" value="@Model.AppToken" type="text" readonly style="cursor:text;" />
+                <a id="btnGenerateNewToken" class="btn btn-primary btn-sm">Generate New Token</a>
+            </div>
+        </div>
+        <div class="form-group">
+            <a id="btnDisableCI" class="btn btn-primary btn-danger">Disable Continuous Integration</a>
+        </div>
+        }
+        else
+        {
+            <a id="btnEnableCI" class="btn btn-primary btn">Enable Continuous Integration</a>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var init = function () {
+                $("#btnEnableCI").click(function (event) {
+                    PostAppConfiguration(true);
+                });
+                $("#btnDisableCI").click(function (event) {
+                    var performDisable = confirm("Are you sure you want to disable Continuous Integration?");
+                    if (performDisable)
+                        PostAppConfiguration(false);
+                });
+                $("#btnGenerateNewToken").click(function (event) {
+                    var performGen;
+                    if ($("#txtGeneratedToken").val().length > 0)
+                        performGen = confirm("Are you sure you want to regenerate the token?\n\nThis will cause the existing token to no longer work.");
+                    else
+                        performGen = true;
+                    if (performGen)
+                        PostGenerateNewTokenForApp();
+                });
+            };
+            var PostGenerateNewTokenForApp = function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GenerateNewTokenForApp", "Platform")',
+                    data: app.helpers.addAntiForgeryToken({ id: $("#hdAppId").val()}),
+                    success: function (data) {
+                        if(data.Msg == "Success")
+                        {
+                            $("#txtGeneratedToken").val(data.AppToken);
+                        }
+                    },
+                    error: function (errorData) {
+                        alert("An Error ocurred while attempting to perform request.")
+                    }
+                });
+            };
+            var PostAppConfiguration = function (ShouldConfigureAPP) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ConfigureAppForCI", "Platform")',
+                    data: app.helpers.addAntiForgeryToken({ id: $("#hdAppId").val(), shouldConfigure: ShouldConfigureAPP }),
+                    success: function (data) {
+                        location.reload();
+                    },
+                    error: function (errorData) {
+                        alert("An Error ocurred while attempting to perform request.")
+                    }
+                });
+            };
+
+
+            init();
+        });
+    </script>
+}

@@ -15,6 +15,7 @@ namespace Iteedee.BetaDepot.Repository
         public string ApplicationIdentifier { get; set; }
         public virtual ICollection<ApplicationTeamMember> AssignedMembers { get; set; }
         public string Platform { get; set; }
+        public string AppToken { get; set; }
 
     }
 }

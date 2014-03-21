@@ -149,6 +149,8 @@ namespace Iteedee.BetaDepot.Controllers
 
 
         }
+        
+        private void 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -304,6 +306,13 @@ namespace Iteedee.BetaDepot.Controllers
                 }
             }
             return null;
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public void PostBuild(string token, string environment, string Notes, HttpPostedFileBase buildData)
+        {
+
         }
 	}
 }

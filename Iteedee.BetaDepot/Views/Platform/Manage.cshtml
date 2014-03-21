@@ -49,7 +49,7 @@
                         <td class="text-center" style="font-size:x-large;">@b.TeamMemberCount</td>
                         <td class="text-center" style="font-size:x-large;">@b.UploadedBuildCount</td>
                         <td class="text-center" style="font-size:large;">@b.ApplicationRole</td>
-                        <td class="text-center"><a href="~/Platform/TeamMembers/@b.Platform/@b.Id/" class="btn btn-primary btn-sm">Team Members</a></td>
+                        <td class="text-center"><a data-id="@b.Id" data-platform="@b.Platform" class="btn btn-primary btn-sm manageApp">Settings</a></td>
                         @if(b.ApplicationRole.ToUpper() == Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR)
                         {
                             <td class="text-center"><a data-id="@b.Id" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
@@ -71,3 +71,62 @@
 
 </div>
 
+<div id="modelManageOptions" class="modal fade" >
+    <input id="hdAppToManageId" type="hidden" />
+    <input id="hdAppToManagePlatform" type="hidden" />
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">Settings</h4>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                    <a id="btnSettingsTeamMembers" class="list-group-item" href="#">
+                        <h4 class="list-group-item-heading">Manage Team Members</h4>
+                        <p class="list-group-item-text">
+                            Edit Team Member Roles, Invite New Users and Remove them.
+                        </p>
+                    </a>
+                    <a id="btnSettingsCI" class="list-group-item" href="#">
+                        <h4 class="list-group-item-heading">Continuous Integration</h4>
+                        <p class="list-group-item-text">
+                            Allow your CI system to push new builds to Beta Depot.
+                            You can get setup, generate and configure your application to accept automated builds.
+                        </p>
+                    </a>
+                </div>
+            </div>           
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var init = function () {
+                $(".manageApp").click(function () {
+                    $("#modelManageOptions").modal("show");
+                    var appId = $(this).attr("data-id");
+                    var appPlatform = $(this).attr("data-platform");
+                    $("#hdAppToManageId").val(appId);
+                    $("#hdAppToManagePlatform").val(appPlatform);
+                });
+
+                $("#btnSettingsTeamMembers").click(function (event) {
+                    location.href = APP.helpers.prepareRelativeUrl("Platform/TeamMembers/" + $("#hdAppToManagePlatform").val() + "/" + $("#hdAppToManageId").val() + "/");
+                    event.preventDefault();
+
+                });
+                $("#btnSettingsCI").click(function (event) {
+                    location.href = APP.helpers.prepareRelativeUrl("Platform/ContinuousIntegration/" + $("#hdAppToManagePlatform").val() + "/" + $("#hdAppToManageId").val() + "/");
+                    event.preventDefault();
+                });
+            };
+
+            init();
+        });
+
+
+    </script>
+}

@@ -48,8 +48,8 @@ namespace Iteedee.BetaDepot.Repository.Migrations
             if (Context.TeamMembers.Where(w => w.UserName.ToLower() == "ci@betadepot.iteedee.com").FirstOrDefault() == null)
                 Context.TeamMembers.Add(new TeamMember()
                 {
-                    EmailAddress = "CI@betadepot.iteedee.com",
-                    UserName = "CI@betadepot.iteedee.com",
+                    EmailAddress = Common.Constants.APPLICATION_TEAM_MEMBER_CI_USER_NAME,
+                    UserName = Common.Constants.APPLICATION_TEAM_MEMBER_CI_USER_NAME,
                     FirstName = "Continuous",
                     LastName = "Integration",
                     IsSystemUser = true

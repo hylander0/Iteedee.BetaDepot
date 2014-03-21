@@ -113,5 +113,17 @@ namespace Iteedee.BetaDepot.Models
             public int AssignAppCount { get; set; }
         }
     }
+
+    public class PlatformContinuousIntegration
+    {
+        public PlatformContinuousIntegration()
+        {
+        }
+        public int AppId { get; set; }
+        public String AppIconUrl { get; set; }
+        public String AppName { get; set; }
+        public String AppToken { get; set; }
+        public bool IsContinuousIntegrationConfigured { get; set; }
+    }
 }
 

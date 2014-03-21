@@ -224,9 +224,10 @@
     <Compile Include="Repository\Managers\ApplicationBuildMgr.cs" />
     <Compile Include="Repository\ApplicationTeamMember.cs" />
     <Compile Include="Repository\BetaDepotContext.cs" />
-    <Compile Include="Repository\Migrations\201403211433546_Added_IsSystemUser.cs" />
-    <Compile Include="Repository\Migrations\201403211433546_Added_IsSystemUser.Designer.cs">
-      <DependentUpon>201403211433546_Added_IsSystemUser.cs</DependentUpon>
+    <Compile Include="Repository\Managers\ApplicationMgr.cs" />
+    <Compile Include="Repository\Migrations\201403211523268_CI_Implementation.cs" />
+    <Compile Include="Repository\Migrations\201403211523268_CI_Implementation.Designer.cs">
+      <DependentUpon>201403211523268_CI_Implementation.cs</DependentUpon>
     </Compile>
     <Compile Include="Repository\Migrations\Configuration.cs" />
     <Compile Include="Repository\TeamMember.cs" />
@@ -270,6 +271,7 @@
     </None>
     <Content Include="Views\Account\InviteRedirect.cshtml" />
     <None Include="Properties\PublishProfiles\File.pubxml" />
+    <Content Include="Views\Platform\ContinuousIntegration.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -341,8 +343,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Repository\Migrations\201403211433546_Added_IsSystemUser.resx">
-      <DependentUpon>201403211433546_Added_IsSystemUser.cs</DependentUpon>
+    <EmbeddedResource Include="Repository\Migrations\201403211523268_CI_Implementation.resx">
+      <DependentUpon>201403211523268_CI_Implementation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -20,5 +20,10 @@ namespace Iteedee.BetaDepot.Common
         public const string APPLICATION_MEMBER_ROLE_TESTER = "TESTER";
         public const string APPLICATION_MEMBER_ROLE_CONTINUOUS_INTEGRATION = "CONTINUOUS_INTEGRATION";
 
+        public const string APPLICATION_TEAM_MEMBER_CI_USER_NAME = "CI@betadepot.iteedee.com";
+
+        public const string APPLICATION_JSON_RESULT_SUCCESS = "Success";
+        public const string APPLICATION_JSON_RESULT_ERROR = "Error";
+
     }
 }

@@ -1,5 +1,6 @@
 Iteedee.BetaDepot
 =================
+![Beta Depot][./Resources/Beta_Depot_Blog_Feature.png]
 
 Mobile beta testing distribution application build on ASP.NET MVC. Free your self from getting kickoff of your current provider with Beta Depot.
 ***Give your organization complete control over your distribution and continuous integration with Beta Depot***
@@ -38,6 +39,26 @@ Beta Depot provides the following functionality:
 With the diverse device footprint that exists it is a must to implement responsive web architectures. **Beta Depot** supports browser displays **large** and **small**. Choose and install your **iOS** or **Android** build right from the browser.
 
 > Beta Depot is currently in **Beta** (no pun intended, really). We are working hard to get it right. If you would like to get updates or see our progress please visit the [Beta Depot Project][2] page.
+
+## MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 
  [1]: http://en.gravatar.com/
  [2]: http://blog.iteedee.com/projects/beta-depot/

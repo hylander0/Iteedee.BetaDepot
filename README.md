@@ -1,6 +1,6 @@
 Iteedee.BetaDepot
 =================
-![Beta Depot][./Resources/Beta_Depot_Blog_Feature.png]
+![Beta Depot](./Resources/Beta_Depot_Blog_Feature.png)
 
 Mobile beta testing distribution application build on ASP.NET MVC. Free your self from getting kickoff of your current provider with Beta Depot.
 ***Give your organization complete control over your distribution and continuous integration with Beta Depot***

@@ -17,7 +17,13 @@ namespace Iteedee.BetaDepot.Repository
         public String EmailAddress { get; set; }
         [DefaultValue(false)]
         public bool IsSystemUser { get; set; }
-        public virtual ICollection<Application> AssignedApplications { get; set; }
+        public virtual ICollection<ApplicationTeamMember> UserMemberships { get; set; }
+
+        public IEnumerable<Application> UserApps
+        {
+            get { return UserMemberships.Select(ab => ab.Application); }
+        }
+
 
 
     }

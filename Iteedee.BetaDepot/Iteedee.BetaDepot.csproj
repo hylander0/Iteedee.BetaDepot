@@ -199,16 +199,20 @@
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\Functions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdministrationController.cs" />
     <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PlatformController.cs" />
+    <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AdministrationViewModel.cs" />
     <Compile Include="Models\HomeViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\PlatformViewModel.cs" />
+    <Compile Include="Models\SharedViewModel.cs" />
     <Compile Include="Platforms\Android\AndroidDecompress.cs" />
     <Compile Include="Platforms\Android\AndroidPackage.cs" />
     <Compile Include="Platforms\Android\AndroidManifestData.cs" />
@@ -228,6 +232,10 @@
     <Compile Include="Repository\Migrations\201403211523268_CI_Implementation.cs" />
     <Compile Include="Repository\Migrations\201403211523268_CI_Implementation.Designer.cs">
       <DependentUpon>201403211523268_CI_Implementation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Repository\Migrations\201404071900181_TeamMembershop_Repo_Nav.cs" />
+    <Compile Include="Repository\Migrations\201404071900181_TeamMembershop_Repo_Nav.Designer.cs">
+      <DependentUpon>201404071900181_TeamMembershop_Repo_Nav.cs</DependentUpon>
     </Compile>
     <Compile Include="Repository\Migrations\Configuration.cs" />
     <Compile Include="Repository\TeamMember.cs" />
@@ -272,6 +280,9 @@
     <Content Include="Views\Account\InviteRedirect.cshtml" />
     <None Include="Properties\PublishProfiles\File.pubxml" />
     <Content Include="Views\Platform\ContinuousIntegration.cshtml" />
+    <Content Include="Views\Administration\Index.cshtml" />
+    <Content Include="Views\Administration\Users.cshtml" />
+    <Content Include="Views\Shared\TopNav.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -345,6 +356,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Repository\Migrations\201403211523268_CI_Implementation.resx">
       <DependentUpon>201403211523268_CI_Implementation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Repository\Migrations\201404071900181_TeamMembershop_Repo_Nav.resx">
+      <DependentUpon>201404071900181_TeamMembershop_Repo_Nav.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

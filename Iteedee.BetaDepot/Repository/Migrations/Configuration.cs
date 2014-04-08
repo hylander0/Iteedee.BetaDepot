@@ -1,4 +1,7 @@
 ﻿using Iteedee.BetaDepot.Common;
+using Iteedee.BetaDepot.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -57,6 +60,15 @@ namespace Iteedee.BetaDepot.Repository.Migrations
 
 
             Context.SaveChanges();
+
+
+            var rm = new RoleManager<IdentityRole>(
+               new RoleStore<IdentityRole>(new ApplicationDbContext()));
+
+            if (!rm.RoleExists(Common.Constants.SYSTEM_ROLE_ADMINISTRATOR))
+                rm.Create(new IdentityRole(Common.Constants.SYSTEM_ROLE_ADMINISTRATOR));
+            if (!rm.RoleExists(Common.Constants.SYSTEM_ROLE_USER))
+                rm.Create(new IdentityRole(Common.Constants.SYSTEM_ROLE_USER));
         }
 
 

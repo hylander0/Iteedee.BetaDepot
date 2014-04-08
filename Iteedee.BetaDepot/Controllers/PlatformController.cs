@@ -312,7 +312,7 @@ namespace Iteedee.BetaDepot.Controllers
                              FirstName = tm.FirstName,
                              LastName = tm.LastName,
                              UserName = tm.UserName,
-                             AssignAppCount = tm.AssignedApplications.Count(),
+                             AssignAppCount = tm.UserMemberships.Count(),
                              TeamMembershipRole = atm.MemberRole
                          });
 

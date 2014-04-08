@@ -20,6 +20,11 @@
       <mvcSiteMapNode title="Android Build History" controller="Platform" action="BuildHistory" id="ANDROID" />
     </mvcSiteMapNode>
     <mvcSiteMapNode title="About" controller="Home" action="About"/>
+    <mvcSiteMapNode title="Administration" controller="Administration" action="Index" >
+      <mvcSiteMapNode title="Manage Users" controller="Administration" action="Users">
+        
+      </mvcSiteMapNode>
+    </mvcSiteMapNode>
   </mvcSiteMapNode>
 
 </mvcSiteMap>

@@ -1,0 +1,18 @@
+﻿@using Microsoft.AspNet.Identity
+@using Iteedee.BetaDepot.Common
+@using MvcSiteMapProvider.Web.Html
+
+<ul class="nav navbar-nav">
+    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+    <li>@Html.ActionLink("iOS", "Index", "Platform", new { id = Constants.BUILD_PLATFORM_IOS }, null)</li>
+    <li>@Html.ActionLink("Android", "Index", "Platform", new { id = Constants.BUILD_PLATFORM_ANDROID }, null)</li>
+    @if (Model.IsInSystemRole)
+    {
+        <li>@Html.ActionLink("Admin", "Index", "Administration")</li>
+    }
+
+    <li>@Html.ActionLink("About", "About", "Home")</li>
+</ul>
+
+
+

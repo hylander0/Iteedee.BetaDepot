@@ -1,5 +1,7 @@
-﻿@using Iteedee.BetaDepot.Common
+﻿@using Microsoft.AspNet.Identity
+@using Iteedee.BetaDepot.Common
 @using MvcSiteMapProvider.Web.Html
+
 
 @functions{
     public static string GetApplicationBaseUrl()
@@ -7,6 +9,7 @@
         var hlr = new UrlHelper(HttpContext.Current.Request.RequestContext);
         return string.Format("{0}://{1}{2}", HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Authority, hlr.Content("~"));
     }
+    
 }
 <!DOCTYPE html>
 <html>
@@ -31,15 +34,9 @@
                 </button>
 
                 <a class="navbar-brand" href="~/"><img src="~/Content/Images/logo.png" height="30" alt="Beta Depot" /></a>
-                @*@Html.ActionLink("Beta Depot", "Index", "Home", null, new { @class = "navbar-brand" })*@
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("iOS", "Index", "Platform", new { id = Constants.BUILD_PLATFORM_IOS }, null)</li>
-                    <li>@Html.ActionLink("Android", "Index", "Platform", new { id = Constants.BUILD_PLATFORM_ANDROID }, null)</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                </ul>
+                @Html.Action("TopNav", "Shared")
                 @Html.Partial("_LoginPartial")
             </div>
         </div>

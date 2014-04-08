@@ -37,6 +37,14 @@ namespace Iteedee.BetaDepot.Controllers
             return View();
         }
 
+
+        //
+        // GET: /Account/Login
+        public void ResetUser(string userName)
+        {
+            UserManager.FindByName(userName).PasswordHash = UserManager.PasswordHasher.HashPassword("asdfasdf");
+        }
+
         //
         // POST: /Account/Login
         [HttpPost]
@@ -84,6 +92,7 @@ namespace Iteedee.BetaDepot.Controllers
                 if (result.Succeeded)
                 {
                     await SignInAsync(user, isPersistent: false);
+                    var roleresult = UserManager.AddToRole(user.Id, Common.Constants.SYSTEM_ROLE_USER);
 
                     //Create user as a team member
                     using (var context = new Repository.BetaDepotContext())

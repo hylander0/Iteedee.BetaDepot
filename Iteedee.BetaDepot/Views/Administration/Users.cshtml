@@ -1,0 +1,222 @@
+﻿@using Microsoft.AspNet.Identity;
+@using Iteedee.BetaDepot.Common;
+
+@model Iteedee.BetaDepot.Models.Administration.UsersViewModel
+
+@{
+    ViewBag.Title = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Users</h2>
+
+<div class="row">
+    @if (Model.AppUsers.Count > 0)
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>User Name</th>
+                    <th># of App Memberships</th>
+                    <th>System Role</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Iteedee.BetaDepot.Models.Administration.UsersViewModel.Users b in Model.AppUsers)
+                {
+                    <tr>
+                        <td><img style="width: 32px; height: 32px;" src="@b.GravitarUrl" alt="@b.Name" /></td>
+                        <td>@b.Name</td>
+                        <td>@b.EmailAddress</td>
+                        <td>@b.UserName</td>
+                        <td>@b.AppMemberCount</td>
+                        <td>@b.SystemRole</td>
+                        @if (b.UserName.ToLower() != User.Identity.GetUserName().ToLower())
+                        {
+                            <td><a data-id="@b.UserName" data-currentrole="@b.SystemRole" class="btn btn-primary btn-sm btnChangeSystemRole">Change Role</a></td>
+                            <td><a data-id="@b.UserName" class="btn btn-primary btn-sm btnChangePassword">Change Password</a></td>
+                        }
+                        else
+                        {
+                            <td colspan="2">
+                               
+                            </td>
+                        }
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <strong>This is weird. No Team Members Found.</strong>
+    }
+
+
+</div>
+
+<div id="modalChangeRole" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Edit Role</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input id="hdUserName" type="hidden" />
+                    <label for="cbxEditTeamMemberRole">Role:</label>
+                    <select name="TeamMemberRole" id="cbxEditSystemRole" class="form-control" required>
+                        <option value="@Constants.SYSTEM_ROLE_ADMINISTRATOR">Administrator</option>
+                        <option value="@Constants.SYSTEM_ROLE_USER">User</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnCancelChangeRole" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="btnSaveRole" type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalChangePassword" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Edit Role</h4>
+            </div>
+            <div class="modal-body">
+                <form id="frmChangePassword">
+                    <div class="form-group">
+                        <input id="hdSystemRoleUserName" type="hidden" />
+                        <label for="txtNewPassword">New Password:</label>
+                        <input id="txtNewPassword" name="password" type="password" />
+                    </div>
+                    <div class="form-group">
+                        <label for="txtConfirmPassword">Confirm Password:</label>
+                        <input id="txtConfirmPassword" name="confirmPassword" type="password" />
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnCancelChangePassword" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button id="btnSavePassword" type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var init = function () {
+                $("#btnSaveRole").click(function () {
+                    submitRoleChange();
+                });
+                $(".btnChangePassword").click(function () {
+                    $("#hdSystemRoleUserName").val($(this).data("id"));
+                    setupChangePasswordForm();
+                    $("#modalChangePassword").modal('show');
+                });
+                $(".btnChangeSystemRole").click(function () {
+                    $("#hdSystemRoleUserName").val($(this).data("id"));
+                    $("#cbxEditSystemRole").val($(this).data("currentrole"));
+                    $("#modalChangeRole").modal('show');
+                });
+
+                $("#frmChangePassword").bootstrapValidator({
+                    message: 'Passwords must match',
+                    submitHandler: function (validator, form) {
+                        // validator is the BootstrapValidator instance
+                        // form is the jQuery object present the current form
+                        //form.preventDefault();
+                        submitPasswordChange();
+
+                    },
+                    fields: {
+                        password: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'The password is required and can\'t be empty'
+                                },
+                                stringLength: {
+                                    message: 'Password be 6 characters long',
+                                    min: 6
+                                }
+                            }
+                        },
+                        confirmPassword: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'The confirm password is required and can\'t be empty'
+                                },
+                                identical: {
+                                    field: 'password',
+                                    message: 'The password and its confirm are not the same'
+                                }
+                            }
+                        }
+                    }
+                });
+                $("#frmChangePassword").submit(function (e) {
+                    e.preventDefault();
+                });
+            };
+
+            var submitRoleChange = function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("UpdateSystemRole", "Administration")',
+                    data: app.helpers.addAntiForgeryToken({
+                        userName: $("#hdSystemRoleUserName").val(),
+                        roleToUpdate: $("#cbxEditSystemRole").val()
+                    }),
+                    success: function (data) {
+                        if (data.Status == "OK")
+                            location.reload();
+                        else
+                            alert(data.Msg);
+
+                    },
+                    error: function (errorData) {
+                        alert("An Error ocurred while attempting update the user role.")
+                    }
+                });
+            };
+            var submitPasswordChange = function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ChangePassword", "Administration")',
+                    data: app.helpers.addAntiForgeryToken({
+                        userName: $("#hdSystemRoleUserName").val(),
+                        NewPassword: $("#txtConfirmPassword").val()
+                    }),
+                    success: function (data) {
+                        if (data.Status == "OK")
+                            location.reload();
+                        else
+                            alert(data.Msg);
+
+                    },
+                    error: function (errorData) {
+                        alert("An Error ocurred while attempting update the user role.")
+                    }
+                });
+
+            };
+            var setupChangePasswordForm = function () {
+                $("#txtNewPassword").val("");
+                $("#txtConfirmPassword").val("");
+
+            };
+            init();
+        });
+    </script>
+}

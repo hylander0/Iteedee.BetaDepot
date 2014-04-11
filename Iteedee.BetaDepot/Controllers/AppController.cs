@@ -79,7 +79,8 @@ namespace Iteedee.BetaDepot.Controllers
         {
             string BuildType = Platforms.Common.GetFilesBuildPlatform(FileName);
             string filePath = Path.Combine(Server.MapPath("~/App_Data/Files"), FileName);
-            Iteedee.BetaDepot.Repository.Managers.ApplicationBuildMgr.SaveBuild(BuildNotes, filePath, User.Identity.GetUserName(), EnvironmentId);
+            int BuildId = Iteedee.BetaDepot.Repository.Managers.ApplicationBuildMgr.SaveBuild(BuildNotes, filePath, User.Identity.GetUserName(), EnvironmentId);
+            Common.Messaging.NotifyTeamOfNewBuild(BuildId);
             return Redirect("~/Home/Index");
         }
 

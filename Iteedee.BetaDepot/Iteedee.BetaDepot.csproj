@@ -57,6 +57,9 @@
     <Reference Include="Ionic.Zip">
       <HintPath>Libs\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="Iteedee.TextTemplater">
+      <HintPath>Libs\Iteedee.TextTemplater.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MvcSiteMapProvider">
       <HintPath>..\packages\MvcSiteMapProvider.MVC5.Core.4.5.2\lib\net45\MvcSiteMapProvider.dll</HintPath>
@@ -198,6 +201,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\Functions.cs" />
+    <Compile Include="Common\Messaging.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdministrationController.cs" />
     <Compile Include="Controllers\AppController.cs" />
@@ -242,6 +246,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Common\MessageTemplates\BuildNotification.html" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <None Include="Content\bootstrap.min.css.old" />
@@ -360,6 +365,12 @@
     <EmbeddedResource Include="Repository\Migrations\201404071900181_TeamMembershop_Repo_Nav.resx">
       <DependentUpon>201404071900181_TeamMembershop_Repo_Nav.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Iteedee.BetaDepot.Messaging\Iteedee.BetaDepot.Messaging.csproj">
+      <Project>{fd4a39c5-2771-49bf-af11-1a6441afee04}</Project>
+      <Name>Iteedee.BetaDepot.Messaging</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

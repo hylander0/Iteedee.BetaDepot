@@ -38,7 +38,7 @@ namespace Iteedee.BetaDepot.Controllers
                              AppId = f.Id,
                              AppName = f.Application.Name,
                              Environment = f.Environment.EnvironmentName,
-                             InstallUrl = Platforms.Common.GeneratePackageInstallUrl(Url.Content("~"), "App", "Download", f.Platform, f.UniqueIdentifier.ToString()),
+                             InstallUrl = Platforms.Common.GeneratePackageInstallUrl("App", "Download", f.Platform, f.UniqueIdentifier.ToString()),
                              Platform = f.Platform,
                              UploadedByName = String.Format("{0} {1}", f.AddedBy.FirstName, f.AddedBy.LastName),
                              UploadedDtm = Common.Functions.GetPrettyDate(f.AddedDtm.ToLocalTime(), "MM/dd/yy"),
@@ -86,7 +86,7 @@ namespace Iteedee.BetaDepot.Controllers
                                     AppId = a.Id,
                                     AppName = a.Name,
                                     Environment = b.Environment.EnvironmentName,
-                                    InstallUrl = Platforms.Common.GeneratePackageInstallUrl(Url.Content("~"), "App", "Download", a.Platform, b.UniqueIdentifier.ToString()),
+                                    InstallUrl = Platforms.Common.GeneratePackageInstallUrl("App", "Download", a.Platform, b.UniqueIdentifier.ToString()),
                                     Platform = platform,
                                     UploadedByName = String.Format("{0} {1}", b.AddedBy.FirstName, b.AddedBy.LastName),
                                     UploadedDtm = Common.Functions.GetPrettyDate(b.AddedDtm.ToLocalTime(), "MM/dd/yy"),
@@ -103,7 +103,7 @@ namespace Iteedee.BetaDepot.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
+            
             return View();
         }
 

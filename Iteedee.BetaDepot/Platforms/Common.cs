@@ -49,12 +49,13 @@ namespace Iteedee.BetaDepot.Platforms
         {
             return string.Format("{0}App/AppIconImage/?AppUniqueIdentifier={1}", AppBase, AppUniqueIdentifier);
         }
-        public static string GeneratePackageInstallUrl(string AppBaseUrl, string Controller, string Action, string Platform, string buildUnqiueId)
+        public static string GeneratePackageInstallUrl(string Controller, string Action, string Platform, string buildUnqiueId)
         {
             string retval = "";
+            string fqdnUrl = System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"];
             if (Platform.ToUpper() == Constants.BUILD_PLATFORM_IOS)
             {
-                string fqdnUrl = System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"];
+                
                 if (fqdnUrl == null)
                     fqdnUrl = "http://localhost/";
                 string plistUrl = HttpUtility.UrlEncode(string.Format("{0}{1}/{2}/?FileName={3}&Platform={4}",
@@ -69,7 +70,7 @@ namespace Iteedee.BetaDepot.Platforms
             else if (Platform.ToUpper() == Constants.BUILD_PLATFORM_ANDROID)
             {
 
-                retval = string.Format("{0}{1}/{2}/?FileName={3}&Platform={4}", AppBaseUrl, Controller, Action, (buildUnqiueId + ".apk"), Constants.BUILD_PLATFORM_ANDROID);
+                retval = string.Format("{0}{1}/{2}/?FileName={3}&Platform={4}", fqdnUrl, Controller, Action, (buildUnqiueId + ".apk"), Constants.BUILD_PLATFORM_ANDROID);
             }
 
             return retval;

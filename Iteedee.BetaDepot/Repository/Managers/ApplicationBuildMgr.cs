@@ -11,8 +11,9 @@ namespace Iteedee.BetaDepot.Repository.Managers
     public static class ApplicationBuildMgr
     {
 
-        public static void SaveBuild(string BuildNotes, string FilePath, string CurrentUserName, int environmentId)
+        public static int SaveBuild(string BuildNotes, string FilePath, string CurrentUserName, int environmentId)
         {
+            int retval = 0;
             string BuildType = Platforms.Common.GetFilesBuildPlatform(Path.GetFileName(FilePath));
             Guid uniqueBuildId = new Guid(System.IO.Path.GetFileNameWithoutExtension(FilePath));
             if (BuildType.ToUpper() == Constants.BUILD_PLATFORM_ANDROID)
@@ -22,7 +23,7 @@ namespace Iteedee.BetaDepot.Repository.Managers
 
                 using (var context = new Repository.BetaDepotContext())
                 {
-                    context.Builds.Add(new Repository.ApplicationBuild()
+                    Repository.ApplicationBuild buildToSave = new Repository.ApplicationBuild()
                     {
                         AddedDtm = DateTime.UtcNow,
                         Application = context.Applications.Where(w => w.ApplicationIdentifier == data.PackageName).FirstOrDefault(),
@@ -33,8 +34,10 @@ namespace Iteedee.BetaDepot.Repository.Managers
                         Platform = Constants.BUILD_PLATFORM_ANDROID,
                         AddedBy = context.TeamMembers.Where(w => w.UserName == CurrentUserName).FirstOrDefault(),
                         Environment = context.Environments.Where(w => w.Id == environmentId).FirstOrDefault()
-                    });
+                    };
+                    context.Builds.Add(buildToSave);
                     context.SaveChanges();
+                    retval = buildToSave.Id;
                 }
 
 
@@ -46,7 +49,7 @@ namespace Iteedee.BetaDepot.Repository.Managers
 
                 using (var context = new Repository.BetaDepotContext())
                 {
-                    context.Builds.Add(new Repository.ApplicationBuild()
+                    Repository.ApplicationBuild buildToSave = new Repository.ApplicationBuild()
                     {
                         AddedDtm = DateTime.UtcNow,
                         Application = context.Applications.Where(w => w.ApplicationIdentifier == data.BundleIdentifier).FirstOrDefault(),
@@ -56,10 +59,15 @@ namespace Iteedee.BetaDepot.Repository.Managers
                         Platform = Constants.BUILD_PLATFORM_IOS,
                         AddedBy = context.TeamMembers.Where(w => w.UserName == CurrentUserName).FirstOrDefault(),
                         Environment = context.Environments.Where(w => w.Id == environmentId).FirstOrDefault()
-                    });
+                    };
+
+                    context.Builds.Add(buildToSave);
                     context.SaveChanges();
+                    retval = buildToSave.Id;
                 }
             }
+
+            return retval;
         }
 
         public static List<ApplicationBuild> GetLastestBuildsByApplicationAndEnvironment(int appId, string environmentName)

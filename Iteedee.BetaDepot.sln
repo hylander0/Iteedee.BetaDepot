@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iteedee.BetaDepot", "Iteedee.BetaDepot\Iteedee.BetaDepot.csproj", "{85B43268-A52C-45C0-9686-8C2497F3173B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iteedee.BetaDepot.Messaging", "Iteedee.BetaDepot.Messaging\Iteedee.BetaDepot.Messaging.csproj", "{FD4A39C5-2771-49BF-AF11-1A6441AFEE04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{85B43268-A52C-45C0-9686-8C2497F3173B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85B43268-A52C-45C0-9686-8C2497F3173B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85B43268-A52C-45C0-9686-8C2497F3173B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD4A39C5-2771-49BF-AF11-1A6441AFEE04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD4A39C5-2771-49BF-AF11-1A6441AFEE04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD4A39C5-2771-49BF-AF11-1A6441AFEE04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD4A39C5-2771-49BF-AF11-1A6441AFEE04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

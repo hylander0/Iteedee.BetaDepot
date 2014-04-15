@@ -52,7 +52,8 @@
                 <td>@b.UploadedByName</td>
                 <td>@b.UploadedDtm</td>
                 <td><span class="buildNotes glyphicon glyphicon-edit" data-original-title="@b.BuildNotes"></span></td>
-                <td><a href="@b.InstallUrl" class="btn btn-primary btn-sm">Install</a></td>
+                <td><a href="@Url.RouteUrl("Platform", routeValues: new { controller = "Platform", action = "AppDetail", Platform = b.Platform, Id = b.BuildId })" class="btn btn-primary btn-sm">Details</a></td>
+                @*<td><a href="@Url.Action("AppDetail", "Platform", new { Platform = b.Platform, Id = b.BuildId })" class="btn btn-primary btn-sm">Details</a></td>*@
                 @if (Model.CurrentUsersMembershipRole.ToUpper() == Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR)
                 {
                     <td><a data-id="@b.BuildId" class="btn btn-danger btn-sm btnDelete">Remove</a></td>

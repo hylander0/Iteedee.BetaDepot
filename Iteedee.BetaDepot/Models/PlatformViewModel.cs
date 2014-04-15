@@ -59,7 +59,24 @@ namespace Iteedee.BetaDepot.Models
             public string UploadedByName { get; set; }
             public string UploadedDtm { get; set; }
             public string Environment { get; set; }
+            public string Platform { get; set; }
         }
+    }
+
+    public class PlatformViewAppDetail
+    {
+        public int AppId { get; set; }
+        public string AppName { get; set; }
+        public string AppIconUrl { get; set; }
+
+        public int BuildId { get; set; }
+        public string InstallUrl { get; set; }
+        public string BuildNotes { get; set; }
+        public string VersionNumber { get; set; }
+        public string VersionCode { get; set; }
+        public string UploadedByName { get; set; }
+        public string UploadedDtm { get; set; }
+        public string Environment { get; set; }
     }
 
 

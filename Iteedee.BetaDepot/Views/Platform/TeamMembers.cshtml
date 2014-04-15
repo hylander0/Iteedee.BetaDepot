@@ -3,7 +3,7 @@
 @using Iteedee.BetaDepot.Common
 
 @{
-    ViewBag.Title = "TeamMembers";
+    ViewBag.Title = "Team Members";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -53,7 +53,7 @@
                             && b.UserName.ToLower() != User.Identity.GetUserName().ToLower())
                         {
                             <td><a data-id="@b.Id" data-currentrole="@b.MembershipRole" class="btn btn-primary btn-sm btnChangeTeamMember">Change Role</a></td> 
-                            <td><a data-id="@b.Id" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
+                            <td><a data-id="@b.Id" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
                         }
                         else
                         {

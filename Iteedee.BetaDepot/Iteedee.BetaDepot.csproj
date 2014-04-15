@@ -57,6 +57,10 @@
     <Reference Include="Ionic.Zip">
       <HintPath>Libs\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="Iteedee.ApkReader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\Iteedee.ApkReader.dll</HintPath>
+    </Reference>
     <Reference Include="Iteedee.TextTemplater">
       <HintPath>Libs\Iteedee.TextTemplater.dll</HintPath>
     </Reference>
@@ -217,10 +221,8 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\PlatformViewModel.cs" />
     <Compile Include="Models\SharedViewModel.cs" />
-    <Compile Include="Platforms\Android\AndroidDecompress.cs" />
     <Compile Include="Platforms\Android\AndroidPackage.cs" />
     <Compile Include="Platforms\Android\AndroidManifestData.cs" />
-    <Compile Include="Platforms\Android\APKReader.cs" />
     <Compile Include="Platforms\Common.cs" />
     <Compile Include="Platforms\iOS\iOSBundle.cs" />
     <Compile Include="Platforms\iOS\iOSBundleData.cs" />
@@ -259,6 +261,8 @@
     <Content Include="Content\Site.css" />
     <Content Include="Libs\ICSharpCode.SharpZipLib.dll" />
     <Content Include="Libs\Ionic.Zip.dll" />
+    <Content Include="Libs\Iteedee.ApkReader.dll" />
+    <Content Include="Libs\Iteedee.TextTemplater.dll" />
     <Content Include="Libs\PNGDecrush.dll" />
     <Content Include="Platforms\iOS\iOSDeploymentPlistTemplate.xml" />
     <Content Include="Repository\Migrations\EFCommands.txt" />

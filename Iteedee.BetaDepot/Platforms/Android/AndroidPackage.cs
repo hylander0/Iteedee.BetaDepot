@@ -92,71 +92,43 @@ namespace Iteedee.BetaDepot.Platforms.Android
         //}
         public static AndroidManifestData GetManifestData(String apkFilePath)
         {
-            string manifestXml = string.Empty;
-            byte[] resourcesData = new byte[0];
-
-            ICSharpCode.SharpZipLib.Zip.ZipInputStream zip = new ICSharpCode.SharpZipLib.Zip.ZipInputStream(File.OpenRead(apkFilePath));
-
-
-            using (var filestream = new FileStream(apkFilePath, FileMode.Open, FileAccess.Read))
+            byte[] manifestData = null;
+            byte[] resourcesData = null;
+            using (ICSharpCode.SharpZipLib.Zip.ZipInputStream zip = new ICSharpCode.SharpZipLib.Zip.ZipInputStream(File.OpenRead(apkFilePath)))
             {
-                ICSharpCode.SharpZipLib.Zip.ZipFile zipfile = new ICSharpCode.SharpZipLib.Zip.ZipFile(filestream);
-                ICSharpCode.SharpZipLib.Zip.ZipEntry item;
-                
-                
-                while ((item = zip.GetNextEntry()) != null)
+                using (var filestream = new FileStream(apkFilePath, FileMode.Open, FileAccess.Read))
                 {
-                    if (item.Name.ToLower() == "androidmanifest.xml")
+                    ICSharpCode.SharpZipLib.Zip.ZipFile zipfile = new ICSharpCode.SharpZipLib.Zip.ZipFile(filestream);
+                    ICSharpCode.SharpZipLib.Zip.ZipEntry item;
+                    while ((item = zip.GetNextEntry()) != null)
                     {
-                        byte[] bytes = new byte[50 * 1024];
-
-                        using(Stream strm = zipfile.GetInputStream(item))
+                        if (item.Name.ToLower() == "androidmanifest.xml")
                         {
-                            int size = strm.Read(bytes, 0, bytes.Length);     
-                            AndroidDecompress decompress = new AndroidDecompress();
-                            manifestXml = decompress.decompressXML(bytes);
-                        }
-
-                    }
-                    if (item.Name.ToLower() == "resources.arsc")
-                    {
-
-
-                        using (Stream strm = zipfile.GetInputStream(item))
-                        {
-                            //int size = strm.Read(bytes, 0, bytes.Length);
-
-                            using (BinaryReader s = new BinaryReader(strm))
+                            manifestData = new byte[50 * 1024];
+                            using (Stream strm = zipfile.GetInputStream(item))
                             {
-                                resourcesData = s.ReadBytes((int)s.BaseStream.Length);
-
+                                strm.Read(manifestData, 0, manifestData.Length);
                             }
-                            //xDocManifest = XDocument.Parse(manifestXml);
+
+                        }
+                        if (item.Name.ToLower() == "resources.arsc")
+                        {
+                            using (Stream strm = zipfile.GetInputStream(item))
+                            {
+                                using (BinaryReader s = new BinaryReader(strm))
+                                {
+                                    resourcesData = s.ReadBytes((int)s.BaseStream.Length);
+
+                                }
+                            }
                         }
                     }
-                    //if (item.Name.ToLower() == "resources.arsc")
-                    //{
-                    //    byte[] bytes = new byte[50 * 1024];
-
-                    //    Stream strm = zipfile.GetInputStream(item);
-                    //    int size = strm.Read(bytes, 0, bytes.Length);
-
-                    //    using (BinaryReader s = new BinaryReader(strm))
-                    //    {
-                    //        byte[] bytes2 = new byte[size];
-                    //        Array.Copy(bytes, bytes2, size);
-                    //        AndroidDecompress decompress = new AndroidDecompress();
-                    //        content = decompress.decompressXML(bytes);
-                    //    }
-                    //    xDocResource = XDocument.Parse(content);
-                    //    //break;
-                    //}
                 }
-                // XmlDocument manifest = new XmlDocument();
-                // manifest.LoadXml(content);
             }
-            APKReader apkReader = new APKReader();
-            ApkInfo info = apkReader.extractInfo(manifestXml, resourcesData);
+
+            Iteedee.ApkReader.ApkReader reader = new ApkReader.ApkReader();
+
+            Iteedee.ApkReader.ApkInfo info = reader.extractInfo(manifestData, resourcesData);
             string AppName = info.label;
 
 

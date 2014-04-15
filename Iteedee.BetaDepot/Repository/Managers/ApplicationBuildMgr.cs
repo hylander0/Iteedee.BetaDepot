@@ -123,7 +123,6 @@ namespace Iteedee.BetaDepot.Repository.Managers
         //UNTESTED
         public static List<ApplicationBuild> GetAllBuildsAssignedToMember(string CurrentUserName)
         {
-            List<ApplicationBuild> retval;
             using (var context = new Repository.BetaDepotContext())
             {
                 //TeamMember currentMember = context.TeamMembers.Where(w => w.UserName == CurrentUserName).FirstOrDefault();

@@ -2,7 +2,7 @@
 @using Iteedee.BetaDepot.Common
 
 @{
-    ViewBag.Title = "BuildHistory";
+    ViewBag.Title = "Build History";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h2>Build History</h2>
@@ -20,10 +20,10 @@
     <div class="form-group">
         <label for="cbxEnvironment">Environments:</label>
         <select name="EnvironmentId" id="cbxEnvironment" class="form-control" required>
-            <option data-url="?appId=@Model.AppId" @if (String.IsNullOrEmpty(Model.selectedEnvironment)) { <text> selected </text>  }>-ALL-</option>
-            <option data-url="?environment=@Constants.BUILD_ENVIRONMENT_DEVELOPMENT&appId=@Model.AppId" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT) { <text> selected </text>     }>Development</option>
-            <option data-url="?environment=@Constants.BUILD_ENVIRONMENT_TEST&appId=@Model.AppId" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_TEST) { <text> selected </text>     }>Test</option>
-            <option data-url="?environment=@Constants.BUILD_ENVIRONMENT_PRODUCTION&appId=@Model.AppId" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_PRODUCTION) { <text> selected </text>    }>Production</option>
+            <option data-url="@Url.Action("BuildHistory", "Platform", new { id = "ANDROID", appId = Model.AppId })" @if (String.IsNullOrEmpty(Model.selectedEnvironment)) { <text> selected </text>  }>-ALL-</option>
+            <option data-url="@Url.Action("BuildHistory", "Platform", new { id = "ANDROID", environment = Constants.BUILD_ENVIRONMENT_DEVELOPMENT, appId = Model.AppId })" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT) { <text> selected </text>      }>Development</option>
+            <option data-url="@Url.Action("BuildHistory", "Platform", new { id = "ANDROID", environment = Constants.BUILD_ENVIRONMENT_TEST, appId = Model.AppId })" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_TEST) { <text> selected </text>      }>Test</option>
+            <option data-url="@Url.Action("BuildHistory", "Platform", new { id = "ANDROID", environment = Constants.BUILD_ENVIRONMENT_PRODUCTION, appId = Model.AppId })" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_PRODUCTION) { <text> selected </text>     }>Production</option>
         </select>
     </div>
 
@@ -55,7 +55,7 @@
                 <td><a href="@b.InstallUrl" class="btn btn-primary btn-sm">Install</a></td>
                 @if (Model.CurrentUsersMembershipRole.ToUpper() == Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR)
                 {
-                    <td><a data-id="@b.BuildId" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
+                    <td><a data-id="@b.BuildId" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
                 }
                 else
                 {
@@ -93,22 +93,18 @@ else
                         $.ajax({
                             type: 'POST',
                             url: '@Url.Action("DeleteBuild", "Platform")',
-                            data: addAntiForgeryToken({ id : $(this).attr("data-id") }),
+                            data: app.helpers.addAntiForgeryToken({ id: $(this).attr("data-id") }),
                             success: function (data) {
-                                location.reload();
+                                //location.reload();
                             },
                             error: function (errorData)
                             {
-                                alert("An Error ocurred while attempting to delete the record.")
+                                //alert("An Error ocurred while attempting to delete the record.")
                             }
                         });
 
                     }
                 });
-            }
-            var addAntiForgeryToken = function(data) {
-                data.__RequestVerificationToken = $('#__AjaxAntiForgeryForm input[name=__RequestVerificationToken]').val();
-                return data;
             }
             init();
         });

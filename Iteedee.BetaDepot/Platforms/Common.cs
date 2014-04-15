@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Web;
 
 namespace Iteedee.BetaDepot.Platforms
@@ -29,7 +30,7 @@ namespace Iteedee.BetaDepot.Platforms
             return string.Empty;
         }
 
-        public static string GetLocalBuildFileLocation(string appFileRoot,string BuildUniqueIdentifier, string Platform)
+        public static string GetLocalBuildFileLocation(string appFileRoot, string BuildUniqueIdentifier, string Platform)
         {
             string retval;
             string fileName;
@@ -41,25 +42,18 @@ namespace Iteedee.BetaDepot.Platforms
             retval = Path.Combine(appFileRoot, @"App_Data\Files", ipaFileName);
             return retval;
         }
-        //public static string GenerateAppIconUrl(string BaseUrl, string AppUniqueIdentifier)
-        //{
-        //    return string.Format("{0}App/AppIconImage/?AppUniqueIdentifier={1}", BaseUrl, AppUniqueIdentifier);
-        //}
-        public static string GenerateAppIconUrl(string AppBase, string AppUniqueIdentifier)
+        public static string GenerateAppIconUrl(string AppUniqueIdentifier)
         {
-            return string.Format("{0}App/AppIconImage/?AppUniqueIdentifier={1}", AppBase, AppUniqueIdentifier);
+            return string.Format("{0}App/AppIconImage/?AppUniqueIdentifier={1}", Iteedee.BetaDepot.Common.Functions.GetBaseUrl(), AppUniqueIdentifier);
         }
         public static string GeneratePackageInstallUrl(string Controller, string Action, string Platform, string buildUnqiueId)
         {
             string retval = "";
-            string fqdnUrl = System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"];
             if (Platform.ToUpper() == Constants.BUILD_PLATFORM_IOS)
             {
                 
-                if (fqdnUrl == null)
-                    fqdnUrl = "http://localhost/";
                 string plistUrl = HttpUtility.UrlEncode(string.Format("{0}{1}/{2}/?FileName={3}&Platform={4}",
-                                                                fqdnUrl,
+                                                                Iteedee.BetaDepot.Common.Functions.GetBaseUrl(),
                                                                 Controller,
                                                                 Action,
                                                                 (buildUnqiueId + ".plist"),
@@ -70,10 +64,33 @@ namespace Iteedee.BetaDepot.Platforms
             else if (Platform.ToUpper() == Constants.BUILD_PLATFORM_ANDROID)
             {
 
-                retval = string.Format("{0}{1}/{2}/?FileName={3}&Platform={4}", fqdnUrl, Controller, Action, (buildUnqiueId + ".apk"), Constants.BUILD_PLATFORM_ANDROID);
+                retval = string.Format("{0}{1}/{2}/?FileName={3}&Platform={4}", Iteedee.BetaDepot.Common.Functions.GetBaseUrl(), Controller, Action, (buildUnqiueId + ".apk"), Constants.BUILD_PLATFORM_ANDROID);
             }
 
             return retval;
         }
+
+        //public static string GetConfiguredBaseUrl()
+        //{
+        //    var request = HttpContext.Current.Request;
+        //    var appUrl = HttpRuntime.AppDomainAppVirtualPath;
+
+        //    if (!string.IsNullOrWhiteSpace(appUrl)) appUrl += "/";
+
+        //    var baseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
+
+        //    return baseUrl;
+
+        //    //string fqdnUrl = System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"];
+        //    //if (string.IsNullOrEmpty(fqdnUrl))
+        //    //    fqdnUrl = "http://localhost/";
+        //    //else
+        //    //{
+        //    //    if (!fqdnUrl.EndsWith("/"))
+        //    //        fqdnUrl = string.Format("{0}/", fqdnUrl);
+        //    //}
+
+        //    //return fqdnUrl;
+        //}
     }
 }

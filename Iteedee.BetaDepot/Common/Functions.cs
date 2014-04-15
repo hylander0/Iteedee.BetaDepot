@@ -97,5 +97,44 @@ namespace Iteedee.BetaDepot.Common
         {
             return String.Format("{0} {1}", first, last);
         }
+
+
+        public static string GetBaseUrl()
+        {
+            string retval = string.Empty;
+            if(true)
+            {
+                var request = HttpContext.Current.Request;
+                var appUrl = HttpRuntime.AppDomainAppVirtualPath;
+
+                if (!string.IsNullOrWhiteSpace(appUrl)) appUrl += "/";
+
+                retval = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
+
+            }
+            //else
+            //{
+            //    retval = System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"];
+            //    if (string.IsNullOrEmpty(retval))
+            //        retval = "http://localhost/";
+            //    else
+            //    {
+            //        if (!retval.EndsWith("/"))
+            //            retval = string.Format("{0}/", retval);
+            //    }
+            //}
+            return retval;
+
+            //string fqdnUrl = System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"];
+            //if (string.IsNullOrEmpty(fqdnUrl))
+            //    fqdnUrl = "http://localhost/";
+            //else
+            //{
+            //    if (!fqdnUrl.EndsWith("/"))
+            //        fqdnUrl = string.Format("{0}/", fqdnUrl);
+            //}
+
+            //return fqdnUrl;
+        }
     }
 }

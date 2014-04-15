@@ -49,7 +49,7 @@ namespace Iteedee.BetaDepot.Controllers
                                  AppId = a.Id,
                                  AppName = a.Name,
                                  Environment = b.Environment.EnvironmentName,
-                                 AppIconUrl = Platforms.Common.GenerateAppIconUrl(Url.Content("~"), a.ApplicationIdentifier),
+                                 AppIconUrl = Platforms.Common.GenerateAppIconUrl(a.ApplicationIdentifier),
                                  InstallUrl = Platforms.Common.GeneratePackageInstallUrl("App", "Download", a.Platform, b.UniqueIdentifier.ToString()),
                                  Platform = platform,
                                  UploadedByName = String.Format("{0} {1}", b.AddedBy.FirstName, b.AddedBy.LastName),
@@ -69,19 +69,24 @@ namespace Iteedee.BetaDepot.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public void DeleteBuild(int id)
+        public JsonResult DeleteBuild(int id)
         {
             using (var context = new Repository.BetaDepotContext())
             {
-                Repository.ApplicationBuild build = context.Builds.Where(w => w.Id == id).FirstOrDefault();
-                context.Builds.Remove(build);
-                System.IO.File.Delete(Platforms.Common.GetLocalBuildFileLocation(
-                                                                Server.MapPath("~"), 
-                                                                build.UniqueIdentifier.ToString(), 
-                                                                build.Platform)
-                                        );
-                context.SaveChanges();
+                //Repository.ApplicationBuild build = context.Builds.Where(w => w.Id == id).FirstOrDefault();
+                //context.Builds.Remove(build);
+                //System.IO.File.Delete(Platforms.Common.GetLocalBuildFileLocation(Server.MapPath("~"),
+                //                                                build.UniqueIdentifier.ToString(), 
+                //                                                build.Platform)
+                //                        );
+                //context.SaveChanges();
             }
+
+            return Json(new
+            {
+                Status = "OK",
+                Msg = ""
+            });
         }
         public ActionResult BuildHistory(string id, string environment, int appId)
         {
@@ -104,7 +109,7 @@ namespace Iteedee.BetaDepot.Controllers
                                                                 .OrderByDescending(o => o.AddedDtm)
                                                                 .ToList();
 
-                mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(Url.Content("~"), app.ApplicationIdentifier);
+                mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(app.ApplicationIdentifier);
                 mdl.AppId = appId;
                 mdl.AppName = app.Name;
                 mdl.Platform = app.Platform;
@@ -158,7 +163,7 @@ namespace Iteedee.BetaDepot.Controllers
                             TeamMemberCount = a.AssignedMembers.Count(),
                             ApplicationRole = a.AssignedMembers.Where(w => w.TeamMember.UserName.ToLower() == userName.ToLower()).FirstOrDefault().MemberRole,
                             UploadedBuildCount = context.Builds.Where(w => w.Application.Id == a.Id).Count(),
-                            AppIconUrl = Platforms.Common.GenerateAppIconUrl(Url.Content("~"), a.ApplicationIdentifier)
+                            AppIconUrl = Platforms.Common.GenerateAppIconUrl(a.ApplicationIdentifier)
 
                         });
                 }
@@ -268,7 +273,7 @@ namespace Iteedee.BetaDepot.Controllers
                 {
                     mdl.AppId = app.Id;
                     mdl.AppName = app.Name;
-                    mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(Url.Content("~"), app.ApplicationIdentifier);
+                    mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(app.ApplicationIdentifier);
                     mdl.AppToken = app.AppToken;
                     Repository.TeamMember CIUser = Repository.Managers.ApplicationMgr.GetSystemCIUser();
                     mdl.IsContinuousIntegrationConfigured = Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(CIUser.UserName, id);
@@ -298,7 +303,7 @@ namespace Iteedee.BetaDepot.Controllers
                 {
                     mdl.AppId = app.Id;
                     mdl.AppName = app.Name;
-                    mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(Url.Content("~"), app.ApplicationIdentifier);
+                    mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(app.ApplicationIdentifier);
                 }
                 else
                     return View(mdl);

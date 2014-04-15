@@ -52,7 +52,7 @@
                         <td class="text-center"><a data-id="@b.Id" data-platform="@b.Platform" class="btn btn-primary btn-sm manageApp">Settings</a></td>
                         @if(b.ApplicationRole.ToUpper() == Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR)
                         {
-                            <td class="text-center"><a data-id="@b.Id" href="#" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
+                            <td class="text-center"><a data-id="@b.Id" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
                         }
                         else
                         {

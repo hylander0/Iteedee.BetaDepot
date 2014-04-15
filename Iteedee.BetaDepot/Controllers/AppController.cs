@@ -28,7 +28,7 @@ namespace Iteedee.BetaDepot.Controllers
                 string ipaFilePath = Path.Combine(Server.MapPath("~/App_Data/Files"), ipaFileName);
 
 
-                string baseUrl = System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"];
+                string baseUrl = Common.Functions.GetBaseUrl();
                 if (baseUrl == null)
                     baseUrl = "http://localhost/";
                 string xml = Platforms.iOS.iOSBundle.GenerateBundlesSoftwarePackagePlist(
@@ -181,7 +181,7 @@ namespace Iteedee.BetaDepot.Controllers
                     string uHash = Common.Functions.GenerateMD5Hash(string.Format("{0}|{1}|{2}", app.ApplicationIdentifier.ToLower(), email.ToLower(), timestamp));
                     string rHash = Common.Functions.GenerateMD5Hash(string.Format("{0}|{1}|{2}", app.ApplicationIdentifier.ToLower(), assignedRole.ToLower(), timestamp));
 
-                    string baseUrl = System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"];
+                    string baseUrl = Iteedee.BetaDepot.Common.Functions.GetBaseUrl();
                     if (baseUrl == null)
                         baseUrl = "http://localhost/";
                     baseUrl = String.Format("{0}{1}", baseUrl, Url.Content("~"));

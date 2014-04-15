@@ -39,7 +39,7 @@ namespace Iteedee.BetaDepot.Common
                 NotificationData.Add(TEMPLATE_KEY_TARGET_ENVIRONMENT, build.Environment.EnvironmentName);
                 NotificationData.Add(TEMPLATE_KEY_NOTES, build.Notes);
                 NotificationData.Add(TEMPLATE_KEY_DATE_UPLOADED, String.Format("{0:g}", build.AddedDtm));
-                NotificationData.Add(TEMPLATE_KEY_BETA_DEPOT_HOME_URL, System.Configuration.ConfigurationManager.AppSettings["FullyQualifiedBaseUrl"]);
+                NotificationData.Add(TEMPLATE_KEY_BETA_DEPOT_HOME_URL, Iteedee.BetaDepot.Common.Functions.GetBaseUrl());
                 NotificationData.Add(TEMPLATE_KEY_BETA_DEPOT_APP_DOWNLOAD_URL, Platforms.Common.GeneratePackageInstallUrl("App", "Download", build.Platform, build.UniqueIdentifier.ToString()));
                 TeamMemberEmails = context.ApplicationTeamMembers.Where(w => w.ApplicationId == build.Application.Id)
                                                                     .Select(s => s.TeamMember.EmailAddress)

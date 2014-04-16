@@ -243,6 +243,10 @@
     <Compile Include="Repository\Migrations\201404071900181_TeamMembershop_Repo_Nav.Designer.cs">
       <DependentUpon>201404071900181_TeamMembershop_Repo_Nav.cs</DependentUpon>
     </Compile>
+    <Compile Include="Repository\Migrations\201404161900023_ReceiveBuildNotifications.cs" />
+    <Compile Include="Repository\Migrations\201404161900023_ReceiveBuildNotifications.Designer.cs">
+      <DependentUpon>201404161900023_ReceiveBuildNotifications.cs</DependentUpon>
+    </Compile>
     <Compile Include="Repository\Migrations\Configuration.cs" />
     <Compile Include="Repository\TeamMember.cs" />
     <Compile Include="Startup.cs" />
@@ -251,6 +255,9 @@
     <EmbeddedResource Include="Common\MessageTemplates\BuildNotification.html" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <EmbeddedResource Include="Repository\Migrations\201404161900023_ReceiveBuildNotifications.resx">
+      <DependentUpon>201404161900023_ReceiveBuildNotifications.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Content\bootstrap.min.css.old" />
     <Content Include="Content\Images\android-icon.png" />
     <Content Include="Content\Images\ios-icon.png" />
@@ -293,7 +300,8 @@
     <Content Include="Views\Administration\Index.cshtml" />
     <Content Include="Views\Administration\Users.cshtml" />
     <Content Include="Views\Shared\TopNav.cshtml" />
-    <Content Include="Views\Platform\AppDetail.cshtml" />
+    <Content Include="Views\Platform\AppBuildDetail.cshtml" />
+    <Content Include="Views\Platform\ManageAppSettings.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

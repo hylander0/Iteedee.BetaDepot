@@ -79,9 +79,14 @@ namespace Iteedee.BetaDepot.Controllers
         {
             string BuildType = Platforms.Common.GetFilesBuildPlatform(FileName);
             string filePath = Path.Combine(Server.MapPath("~/App_Data/Files"), FileName);
-            int BuildId = Iteedee.BetaDepot.Repository.Managers.ApplicationBuildMgr.SaveBuild(BuildNotes, filePath, User.Identity.GetUserName(), EnvironmentId);
-            Common.Messaging.NotifyTeamOfNewBuild(BuildId);
-            return Redirect("~/Home/Index");
+            ApplicationBuild Build = Iteedee.BetaDepot.Repository.Managers.ApplicationBuildMgr.SaveBuild(BuildNotes, filePath, User.Identity.GetUserName(), EnvironmentId);
+            Common.Messaging.NotifyTeamOfNewBuild(Build.Id);
+            if (Build.Platform == Common.Constants.BUILD_PLATFORM_ANDROID)
+                return Redirect("~/Platform/Index/ANDROID");
+            else if (Build.Platform == Common.Constants.BUILD_PLATFORM_IOS)
+                return Redirect("~/Platform/Index/IOS");
+            else
+                return Redirect("~/Home/Index");   
         }
 
 

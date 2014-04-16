@@ -18,5 +18,7 @@ namespace Iteedee.BetaDepot.Repository
         public virtual TeamMember TeamMember { get; set; }
 
         public String MemberRole { get; set; }
+        public bool ReceiveBuildNotifications { get; set; }
+
     }
 }

@@ -263,8 +263,8 @@ namespace Iteedee.BetaDepot.Controllers
         {
             Models.PlatformContinuousIntegration mdl = new Models.PlatformContinuousIntegration();
 
-            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), id))
-                throw new HttpException(403, "You are not a team member of this app.");
+            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMemberInRole(User.Identity.GetUserName(), id, Common.Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR))
+                throw new HttpException(403, "You are not allowed to have access to this app.");
 
             string currentUser = User.Identity.GetUserName().ToLower();
 
@@ -284,14 +284,14 @@ namespace Iteedee.BetaDepot.Controllers
             
             return View(mdl);
         }
-        public ActionResult TeamMembers(int id, string platform)
+        public ActionResult TeamMembers(string platform, int id)
         {
             Models.PlatformViewTeamMembers mdl = new Models.PlatformViewTeamMembers();
-            
 
-            
-            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), id))
-                throw new HttpException(403, "You are not a team member of this app.");
+
+
+            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMemberInRole(User.Identity.GetUserName(), id, Common.Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR))
+                throw new HttpException(403, "You are not allowed to have access to this app.");
 
             string currentUser = User.Identity.GetUserName().ToLower();
             
@@ -341,7 +341,7 @@ namespace Iteedee.BetaDepot.Controllers
             return View(mdl);
         }
 
-        public ViewResult AppDetail(string platform, int id, int buildId)
+        public ViewResult AppBuildDetail(string platform, int id, int buildId)
         {
             Repository.ApplicationBuild build;
 
@@ -353,7 +353,7 @@ namespace Iteedee.BetaDepot.Controllers
             if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), build.Application.Id))
                 throw new HttpException(403, "You are not a team member of this app.");
 
-            return View(new Models.PlatformViewAppDetail()
+            return View(new Models.PlatformViewAppBuildDetail()
                 {
                     AppIconUrl = Platforms.Common.GenerateAppIconUrl(build.Application.ApplicationIdentifier),
                     AppId = build.Application.Id,
@@ -369,6 +369,58 @@ namespace Iteedee.BetaDepot.Controllers
                     VersionCode = build.versionCode
                     
                 });
+        }
+
+        public ViewResult ManageAppSettings(string platform, int id)
+        {
+            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), id))
+                throw new HttpException(403, "You are not a team member of this app.");
+
+            string currentUser = User.Identity.GetUserName().ToLower();
+            Models.PlatformManageAppSettings mdl = new Models.PlatformManageAppSettings();
+            using (var context = new Repository.BetaDepotContext())
+            {
+                var membership = context.ApplicationTeamMembers.Where(w => w.TeamMember.UserName.ToUpper() == currentUser.ToUpper() 
+                                                                                && w.ApplicationId == id)
+                                                                .FirstOrDefault();
+                if(membership != null)
+                {
+                    mdl.AppId = id;
+                    mdl.IsReceivingBuildNotifications = membership.ReceiveBuildNotifications;
+                }
+            }
+            return View(mdl);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult UpdateUserManagement(Models.PlatformManageAppSettings n)
+        {
+            try
+            {
+                string currentUser = User.Identity.GetUserName().ToLower();
+                using (var context = new Repository.BetaDepotContext())
+                {
+                    var membership = context.ApplicationTeamMembers.Where(w => w.TeamMember.UserName.ToUpper() == currentUser.ToUpper()
+                                                                                    && w.ApplicationId == n.AppId)
+                                                                    .FirstOrDefault();
+                    membership.ReceiveBuildNotifications = n.IsReceivingBuildNotifications;
+                    context.SaveChanges();
+                }
+                     
+            }  
+            catch
+            {
+                return Json(new
+                {
+                    Msg = Common.Constants.APPLICATION_JSON_RESULT_ERROR
+                });
+            }
+
+            return Json(new 
+            {
+                Msg = Common.Constants.APPLICATION_JSON_RESULT_SUCCESS
+            });
         }
 
 	}

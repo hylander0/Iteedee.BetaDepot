@@ -4,25 +4,29 @@
             xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
 
   <mvcSiteMapNode title="Home" controller="Home" action="Index">
+    <!--iOS-->
     <mvcSiteMapNode title="iOS" controller="Platform" action="Index" id="IOS">
       <mvcSiteMapNode title="Manage iOS" controller="Platform" action="Manage" id="IOS" >
-        <mvcSiteMapNode title="Team Members" controller="Platform" action="TeamMembers" Platform="IOS" preservedRouteParameters="id" />
-        <mvcSiteMapNode title="Continuous Integration" controller="Platform" action="ContinuousIntegration" Platform="IOS" preservedRouteParameters="id" />
+        <mvcSiteMapNode title="Team Members" controller="Platform" action="TeamMembers" platform="IOS" preservedRouteParameters="id" />
+        <mvcSiteMapNode title="Continuous Integration" controller="Platform" action="ContinuousIntegration" platform="IOS" preservedRouteParameters="id" />
+        <mvcSiteMapNode title="Settings" controller="Platform" action="ManageAppSettings" platform="IOS" preservedRouteParameters="id" />
       </mvcSiteMapNode>
       <mvcSiteMapNode title="Build History" route="Platform" controller="Platform" platform="IOS" action="BuildHistory" preservedRouteParameters="id">
-        <mvcSiteMapNode title="Detail" route="Platform" controller="Platform" platform="IOS" action="AppDetail" preservedRouteParameters="id" />
+        <mvcSiteMapNode title="Detail" route="Platform" controller="Platform" platform="IOS" action="AppBuildDetail" preservedRouteParameters="id" />
       </mvcSiteMapNode>
-      
     </mvcSiteMapNode>
+    <!--Android-->
     <mvcSiteMapNode title="Android" controller="Platform" action="Index" id="ANDROID">
       <mvcSiteMapNode title="Manage Android" controller="Platform" action="Manage" id="ANDROID">
-        <mvcSiteMapNode title="Team Members" controller="Platform" action="TeamMembers" Platform="ANDROID" preservedRouteParameters="id" />
-        <mvcSiteMapNode title="Continuous Integration" controller="Platform" action="ContinuousIntegration" Platform="ANDROID" preservedRouteParameters="id" />
+        <mvcSiteMapNode title="Team Members" controller="Platform" action="TeamMembers" platform="ANDROID" preservedRouteParameters="id"  />
+        <mvcSiteMapNode title="Continuous Integration" controller="Platform" action="ContinuousIntegration" platform="ANDROID" preservedRouteParameters="id" />
+        <mvcSiteMapNode title="Settings" controller="Platform" action="ManageAppSettings" platform="ANDROID" preservedRouteParameters="id" />
       </mvcSiteMapNode>
       <mvcSiteMapNode title="Build History" route="Platform" controller="Platform" platform="ANDROID" action="BuildHistory" preservedRouteParameters="id">
-        <mvcSiteMapNode title="Detail" route="Platform" controller="Platform" platform="ANDROID" action="AppDetail" preservedRouteParameters="id" />
+        <mvcSiteMapNode title="Detail" route="Platform" controller="Platform" platform="ANDROID" action="AppBuildDetail" preservedRouteParameters="id" />
       </mvcSiteMapNode>
     </mvcSiteMapNode>
+    
     <mvcSiteMapNode title="About" controller="Home" action="About"/>
     <mvcSiteMapNode title="Administration" controller="Administration" action="Index" >
       <mvcSiteMapNode title="Manage Users" controller="Administration" action="Users">

@@ -64,7 +64,7 @@ namespace Iteedee.BetaDepot.Models
         }
     }
 
-    public class PlatformViewAppDetail
+    public class PlatformViewAppBuildDetail
     {
         public int AppId { get; set; }
         public string AppName { get; set; }
@@ -142,6 +142,12 @@ namespace Iteedee.BetaDepot.Models
         public String AppName { get; set; }
         public String AppToken { get; set; }
         public bool IsContinuousIntegrationConfigured { get; set; }
+    }
+
+    public class PlatformManageAppSettings
+    {
+        public int  AppId { get; set; }
+        public bool IsReceivingBuildNotifications { get; set; }
     }
 }
 

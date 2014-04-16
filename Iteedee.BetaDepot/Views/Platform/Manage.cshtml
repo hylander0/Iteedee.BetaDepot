@@ -1,6 +1,8 @@
 ﻿@using Iteedee.BetaDepot.Models
 @using Iteedee.BetaDepot.Common
 
+@model Iteedee.BetaDepot.Models.PlatformViewManage
+
 @{
     ViewBag.Title = "Manage My " + Model.PlatformDesc + "Apps";
 }
@@ -49,7 +51,7 @@
                         <td class="text-center" style="font-size:x-large;">@b.TeamMemberCount</td>
                         <td class="text-center" style="font-size:x-large;">@b.UploadedBuildCount</td>
                         <td class="text-center" style="font-size:large;">@b.ApplicationRole</td>
-                        <td class="text-center"><a data-id="@b.Id" data-platform="@b.Platform" class="btn btn-primary btn-sm manageApp">Settings</a></td>
+                        <td class="text-center"><a data-id="@b.Id" data-platform="@b.Platform" data-role="@b.ApplicationRole.ToUpper()" class="btn btn-primary btn-sm manageApp">Settings</a></td>
                         @if(b.ApplicationRole.ToUpper() == Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR)
                         {
                             <td class="text-center"><a data-id="@b.Id" class="btn btn-danger btn-sm btnDelete">Remove</a></td>
@@ -82,6 +84,12 @@
             </div>
             <div class="modal-body">
                 <div class="list-group">
+                    <a id="btnSettingApp" class="list-group-item" href="#">
+                        <h4 class="list-group-item-heading">Manage App Settings</h4>
+                        <p class="list-group-item-text">
+                            Beta Depot will contact you when new builds for this application are uploaded. Manage you notificatoin settings.
+                        </p>
+                    </a>
                     <a id="btnSettingsTeamMembers" class="list-group-item" href="#">
                         <h4 class="list-group-item-heading">Manage Team Members</h4>
                         <p class="list-group-item-text">
@@ -109,6 +117,7 @@
                     $("#modelManageOptions").modal("show");
                     var appId = $(this).attr("data-id");
                     var appPlatform = $(this).attr("data-platform");
+                    applyRoles($(this).attr("data-role"));
                     $("#hdAppToManageId").val(appId);
                     $("#hdAppToManagePlatform").val(appPlatform);
                 });
@@ -122,8 +131,18 @@
                     location.href = APP.helpers.prepareRelativeUrl("Platform/ContinuousIntegration/" + $("#hdAppToManagePlatform").val() + "/" + $("#hdAppToManageId").val() + "/");
                     event.preventDefault();
                 });
+                $("#btnSettingApp").click(function (event) {
+                    location.href = APP.helpers.prepareRelativeUrl("Platform/ManageAppSettings/" + $("#hdAppToManagePlatform").val() + "/" + $("#hdAppToManageId").val() + "/");
+                    event.preventDefault();
+                });
             };
-
+            var applyRoles = function (appRole) {
+                if (appRole != '@Iteedee.BetaDepot.Common.Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR')
+                {
+                    $("#btnSettingsTeamMembers").hide();
+                    $("#btnSettingsCI").hide();
+                }
+            };
             init();
         });
 

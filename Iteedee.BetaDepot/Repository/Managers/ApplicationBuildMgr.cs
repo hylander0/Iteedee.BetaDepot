@@ -11,9 +11,9 @@ namespace Iteedee.BetaDepot.Repository.Managers
     public static class ApplicationBuildMgr
     {
 
-        public static int SaveBuild(string BuildNotes, string FilePath, string CurrentUserName, int environmentId)
+        public static ApplicationBuild SaveBuild(string BuildNotes, string FilePath, string CurrentUserName, int environmentId)
         {
-            int retval = 0;
+            ApplicationBuild retval = null;
             string BuildType = Platforms.Common.GetFilesBuildPlatform(Path.GetFileName(FilePath));
             Guid uniqueBuildId = new Guid(System.IO.Path.GetFileNameWithoutExtension(FilePath));
             if (BuildType.ToUpper() == Constants.BUILD_PLATFORM_ANDROID)
@@ -37,7 +37,7 @@ namespace Iteedee.BetaDepot.Repository.Managers
                     };
                     context.Builds.Add(buildToSave);
                     context.SaveChanges();
-                    retval = buildToSave.Id;
+                    retval = buildToSave;
                 }
 
 
@@ -63,7 +63,7 @@ namespace Iteedee.BetaDepot.Repository.Managers
 
                     context.Builds.Add(buildToSave);
                     context.SaveChanges();
-                    retval = buildToSave.Id;
+                    retval = buildToSave;
                 }
             }
 
@@ -161,6 +161,22 @@ namespace Iteedee.BetaDepot.Repository.Managers
             }
             return retval;
         }
+        //public static bool IsUserAnAppTeamMemberAndInMembershipRole(string UserName, int AppId, string role)
+        //{
+        //    bool retval = false;
+        //    using (var context = new Repository.BetaDepotContext())
+        //    {
+        //        var apps = (from a in context.Applications
+        //                    join tm in context.ApplicationTeamMembers on a.Id equals tm.ApplicationId
+        //                    where tm.TeamMember.UserName == UserName
+        //                        && a.Id == AppId
+        //                        && tm.MemberRole.ToUpper() == role.ToUpper()
+        //                    select a).ToList();
+        //        if (apps != null)
+        //            retval = apps.Count() > 0;
+        //    }
+        //    return retval;
+        //}
         public static bool IsUserAnAppTeamMemberInRole(string UserName, int AppId, string Role)
         {
             bool retval = false;

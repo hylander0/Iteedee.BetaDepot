@@ -9,7 +9,9 @@
         <mvcSiteMapNode title="Team Members" controller="Platform" action="TeamMembers" Platform="IOS" preservedRouteParameters="id" />
         <mvcSiteMapNode title="Continuous Integration" controller="Platform" action="ContinuousIntegration" Platform="IOS" preservedRouteParameters="id" />
       </mvcSiteMapNode>
-      <mvcSiteMapNode title="iOS Build History" controller="Platform" action="BuildHistory" id="IOS" />
+      <mvcSiteMapNode title="Build History" route="Platform" controller="Platform" platform="IOS" action="BuildHistory" preservedRouteParameters="id">
+        <mvcSiteMapNode title="Detail" route="Platform" controller="Platform" platform="IOS" action="AppDetail" preservedRouteParameters="id" />
+      </mvcSiteMapNode>
       
     </mvcSiteMapNode>
     <mvcSiteMapNode title="Android" controller="Platform" action="Index" id="ANDROID">
@@ -17,7 +19,9 @@
         <mvcSiteMapNode title="Team Members" controller="Platform" action="TeamMembers" Platform="ANDROID" preservedRouteParameters="id" />
         <mvcSiteMapNode title="Continuous Integration" controller="Platform" action="ContinuousIntegration" Platform="ANDROID" preservedRouteParameters="id" />
       </mvcSiteMapNode>
-      <mvcSiteMapNode title="Android Build History" controller="Platform" action="BuildHistory" id="ANDROID" />
+      <mvcSiteMapNode title="Build History" route="Platform" controller="Platform" platform="ANDROID" action="BuildHistory" preservedRouteParameters="id">
+        <mvcSiteMapNode title="Detail" route="Platform" controller="Platform" platform="ANDROID" action="AppDetail" preservedRouteParameters="id" />
+      </mvcSiteMapNode>
     </mvcSiteMapNode>
     <mvcSiteMapNode title="About" controller="Home" action="About"/>
     <mvcSiteMapNode title="Administration" controller="Administration" action="Index" >

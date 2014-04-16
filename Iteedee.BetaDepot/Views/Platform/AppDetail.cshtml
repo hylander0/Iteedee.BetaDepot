@@ -22,7 +22,7 @@
                     <a href="@Model.InstallUrl" class="btn btn-primary btn-sm">Install</a>
                 </p>
                 <p>
-                    <a data-id="@Model.BuildId" class="btn btn-danger btn-sm btnDelete">Remove</a>
+                    <a id="btnDelete" data-id="@Model.BuildId" class="btn btn-danger btn-sm">Remove</a>
                 </p>
             </div>
         </div>
@@ -64,3 +64,33 @@
     </form>
   
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+    $(document).ready(function () {
+        var init = function () {
+
+            $("#btnDelete").click(function () {
+                var performDelete = confirm("Are you sure you want to delete this build?");
+                if (performDelete) {
+                    //$(this).attr("data-id");
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("DeleteBuild", "Platform")',
+                        data: app.helpers.addAntiForgeryToken({ id: $(this).attr("data-id") }),
+                        success: function (data) {
+                            window.location.replace('@Url.RouteUrl("Platform", routeValues: new { controller = "Platform", action = "BuildHistory", platform = Model.Platform, id = Model.AppId })');
+                        },
+                        error: function (errorData) {
+                            //alert("An Error ocurred while attempting to delete the record.")
+                        }
+                    });
+
+                }
+            });
+        }
+        init();
+    });
+    </script>
+}

@@ -68,7 +68,7 @@ namespace Iteedee.BetaDepot.Models
         public int AppId { get; set; }
         public string AppName { get; set; }
         public string AppIconUrl { get; set; }
-
+        public string Platform { get; set; }
         public int BuildId { get; set; }
         public string InstallUrl { get; set; }
         public string BuildNotes { get; set; }

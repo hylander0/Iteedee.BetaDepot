@@ -340,13 +340,13 @@ namespace Iteedee.BetaDepot.Controllers
             return View(mdl);
         }
 
-        public ViewResult AppDetail(string Platform, int id)
+        public ViewResult AppDetail(string platform, int id, int buildId)
         {
             Repository.ApplicationBuild build;
 
             using (var context = new BetaDepot.Repository.BetaDepotContext())
             {
-                build = context.Builds.Include("Environment").Include("Application").Include("AddedBy").Where(w => w.Id == id).FirstOrDefault();
+                build = context.Builds.Include("Environment").Include("Application").Include("AddedBy").Where(w => w.Id == buildId).FirstOrDefault();
             }
 
             if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), build.Application.Id))
@@ -357,10 +357,11 @@ namespace Iteedee.BetaDepot.Controllers
                     AppIconUrl = Platforms.Common.GenerateAppIconUrl(build.Application.ApplicationIdentifier),
                     AppId = build.Application.Id,
                     AppName = build.Application.Name,
-                    BuildId = id,
+                    BuildId = buildId,
+                    Platform = platform,
                     BuildNotes = build.Notes,
                     Environment = build.Environment.EnvironmentName,
-                    InstallUrl = Platforms.Common.GeneratePackageInstallUrl("App", "Download", Platform, build.UniqueIdentifier.ToString()),
+                    InstallUrl = Platforms.Common.GeneratePackageInstallUrl("App", "Download", platform, build.UniqueIdentifier.ToString()),
                     UploadedByName = String.Format("{0} {1}", build.AddedBy.FirstName, build.AddedBy.LastName),
                     UploadedDtm = String.Format("{0:f}",build.AddedDtm),
                     VersionNumber = build.versionNumber,

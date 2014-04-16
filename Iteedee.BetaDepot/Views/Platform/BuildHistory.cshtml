@@ -20,10 +20,10 @@
     <div class="form-group">
         <label for="cbxEnvironment">Environments:</label>
         <select name="EnvironmentId" id="cbxEnvironment" class="form-control" required>
-            <option data-url="@Url.Action("BuildHistory", "Platform", new { id = "ANDROID", appId = Model.AppId })" @if (String.IsNullOrEmpty(Model.selectedEnvironment)) { <text> selected </text>  }>-ALL-</option>
-            <option data-url="@Url.Action("BuildHistory", "Platform", new { id = "ANDROID", environment = Constants.BUILD_ENVIRONMENT_DEVELOPMENT, appId = Model.AppId })" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT) { <text> selected </text>      }>Development</option>
-            <option data-url="@Url.Action("BuildHistory", "Platform", new { id = "ANDROID", environment = Constants.BUILD_ENVIRONMENT_TEST, appId = Model.AppId })" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_TEST) { <text> selected </text>      }>Test</option>
-            <option data-url="@Url.Action("BuildHistory", "Platform", new { id = "ANDROID", environment = Constants.BUILD_ENVIRONMENT_PRODUCTION, appId = Model.AppId })" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_PRODUCTION) { <text> selected </text>     }>Production</option>
+            <option data-url="@Url.RouteUrl("Platform", routeValues: new { controller = "Platform", action = "BuildHistory", platform = Model.Platform, id = Model.AppId })" @if (String.IsNullOrEmpty(Model.selectedEnvironment)) { <text> selected </text>   }>-ALL-</option>
+            <option data-url="@Url.RouteUrl("Platform", routeValues: new { controller = "Platform", action = "BuildHistory", platform = Model.Platform, id = Model.AppId, environment = Constants.BUILD_ENVIRONMENT_DEVELOPMENT })" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_DEVELOPMENT) { <text> selected </text>       }>Development</option>
+            <option data-url="@Url.RouteUrl("Platform", routeValues: new { controller = "Platform", action = "BuildHistory", platform = Model.Platform, id = Model.AppId, environment = Constants.BUILD_ENVIRONMENT_TEST })" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_TEST) { <text> selected </text>       }>Test</option>
+            <option data-url="@Url.RouteUrl("Platform", routeValues: new { controller = "Platform", action = "BuildHistory", platform = Model.Platform, id = Model.AppId, environment = Constants.BUILD_ENVIRONMENT_PRODUCTION })" @if (Model.selectedEnvironment == Constants.BUILD_ENVIRONMENT_PRODUCTION) { <text> selected </text>      }>Production</option>
         </select>
     </div>
 
@@ -52,8 +52,8 @@
                 <td>@b.UploadedByName</td>
                 <td>@b.UploadedDtm</td>
                 <td><span class="buildNotes glyphicon glyphicon-edit" data-original-title="@b.BuildNotes"></span></td>
-                <td><a href="@Url.RouteUrl("Platform", routeValues: new { controller = "Platform", action = "AppDetail", Platform = b.Platform, Id = b.BuildId })" class="btn btn-primary btn-sm">Details</a></td>
-                @*<td><a href="@Url.Action("AppDetail", "Platform", new { Platform = b.Platform, Id = b.BuildId })" class="btn btn-primary btn-sm">Details</a></td>*@
+                <td><a href="@Url.RouteUrl("Platform", routeValues: new { controller = "Platform", action = "AppDetail", platform = b.Platform, id = Model.AppId, buildId = b.BuildId })" class="btn btn-primary btn-sm">Details</a></td>
+                @*<td><a href="@Url.Action("AppDetail", "Platform", new { platform = b.Platform, Id = b.BuildId })" class="btn btn-primary btn-sm">Details</a></td>*@
                 @if (Model.CurrentUsersMembershipRole.ToUpper() == Constants.APPLICATION_MEMBER_ROLE_ADMINISTRATOR)
                 {
                     <td><a data-id="@b.BuildId" class="btn btn-danger btn-sm btnDelete">Remove</a></td>

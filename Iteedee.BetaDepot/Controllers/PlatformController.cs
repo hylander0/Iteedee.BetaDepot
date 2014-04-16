@@ -88,29 +88,29 @@ namespace Iteedee.BetaDepot.Controllers
                 Msg = ""
             });
         }
-        public ActionResult BuildHistory(string id, string environment, int appId)
+        public ActionResult BuildHistory(string Platform, int id, string environment)
         {
 
             Models.PlatformViewAppBuildHistory mdl = new Models.PlatformViewAppBuildHistory();
-            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), appId))
+            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), id))
                 throw new HttpException(403, "You are not a team member of this app.");
 
             string currentUser = User.Identity.GetUserName().ToLower();
             using(var context = new BetaDepot.Repository.BetaDepotContext())
             {
-                Repository.Application app = context.Applications.Where(wa => wa.Id == appId).FirstOrDefault();
+                Repository.Application app = context.Applications.Where(wa => wa.Id == id).FirstOrDefault();
                 mdl.CurrentUsersMembershipRole = context.ApplicationTeamMembers
                                                 .Where(w => w.TeamMember.UserName.ToLower() == currentUser
-                                                            && w.ApplicationId == appId).FirstOrDefault().MemberRole;
+                                                            && w.ApplicationId == id).FirstOrDefault().MemberRole;
 
                 List<Repository.ApplicationBuild> builds = context.Builds
-                                                                .Where(w => w.Application.Id == appId
+                                                                .Where(w => w.Application.Id == id
                                                                         && (environment == null || w.Environment.EnvironmentName == environment))
                                                                 .OrderByDescending(o => o.AddedDtm)
                                                                 .ToList();
 
                 mdl.AppIconUrl = Platforms.Common.GenerateAppIconUrl(app.ApplicationIdentifier);
-                mdl.AppId = appId;
+                mdl.AppId = id;
                 mdl.AppName = app.Name;
                 mdl.Platform = app.Platform;
                 mdl.selectedEnvironment = environment ?? string.Empty;
@@ -123,7 +123,8 @@ namespace Iteedee.BetaDepot.Controllers
                             UploadedByName = String.Format("{0} {1}", f.AddedBy.FirstName, f.AddedBy.LastName),
                             UploadedDtm = Common.Functions.GetPrettyDate(f.AddedDtm.ToLocalTime(), "MM/dd/yy"),
                             VersionNumber = string.IsNullOrEmpty(f.versionCode) ? f.versionNumber : string.Format("{0} ({1})", f.versionNumber, f.versionCode),
-                            InstallUrl = Platforms.Common.GeneratePackageInstallUrl("App", "Download", f.Platform, f.UniqueIdentifier.ToString())
+                            InstallUrl = Platforms.Common.GeneratePackageInstallUrl("App", "Download", f.Platform, f.UniqueIdentifier.ToString()),
+                            Platform = f.Platform
                             
                         });
                 });
@@ -337,6 +338,35 @@ namespace Iteedee.BetaDepot.Controllers
 
             }
             return View(mdl);
+        }
+
+        public ViewResult AppDetail(string Platform, int id)
+        {
+            Repository.ApplicationBuild build;
+
+            using (var context = new BetaDepot.Repository.BetaDepotContext())
+            {
+                build = context.Builds.Include("Environment").Include("Application").Include("AddedBy").Where(w => w.Id == id).FirstOrDefault();
+            }
+
+            if (!Repository.Managers.ApplicationBuildMgr.IsUserAnAppTeamMember(User.Identity.GetUserName(), build.Application.Id))
+                throw new HttpException(403, "You are not a team member of this app.");
+
+            return View(new Models.PlatformViewAppDetail()
+                {
+                    AppIconUrl = Platforms.Common.GenerateAppIconUrl(build.Application.ApplicationIdentifier),
+                    AppId = build.Application.Id,
+                    AppName = build.Application.Name,
+                    BuildId = id,
+                    BuildNotes = build.Notes,
+                    Environment = build.Environment.EnvironmentName,
+                    InstallUrl = Platforms.Common.GeneratePackageInstallUrl("App", "Download", Platform, build.UniqueIdentifier.ToString()),
+                    UploadedByName = String.Format("{0} {1}", build.AddedBy.FirstName, build.AddedBy.LastName),
+                    UploadedDtm = String.Format("{0:f}",build.AddedDtm),
+                    VersionNumber = build.versionNumber,
+                    VersionCode = build.versionCode
+                    
+                });
         }
 
 	}

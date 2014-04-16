@@ -1,4 +1,22 @@
 ﻿@using Microsoft.AspNet.Identity
+
+@functions{
+    public static bool IsNavItemEnabled(string controller, string action)
+    {
+        var routes = HttpContext.Current.Request.RequestContext.RouteData.Values;
+        if (routes["controller"] != null && routes["controller"].ToString().ToUpper() == controller.ToUpper())
+        {
+            if (string.IsNullOrEmpty(action))
+                return true;
+            else if (routes["action"].ToString().ToUpper() == action.ToUpper())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
@@ -6,7 +24,7 @@
     @Html.AntiForgeryToken()
 
     <ul class="nav navbar-nav navbar-right">
-        <li>
+        <li class="@(IsNavItemEnabled("Account", "") ? "active" : "")">
             @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>

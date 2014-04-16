@@ -269,6 +269,7 @@
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\vendor\bootstrap-growl.min.js" />
     <Content Include="Scripts\vendor\bootstrapValidator.min.js" />
     <Content Include="Views\Platform\Index.cshtml" />
     <Content Include="Views\Platform\BuildHistory.cshtml" />

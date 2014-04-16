@@ -33,6 +33,12 @@ namespace Iteedee.BetaDepot
                     .Include("~/Scripts/vendor/bootstrapValidator.min.js")
                     );
 
+
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap-growl")
+                    .Include("~/Scripts/vendor/bootstrap-growl.min.js")
+                    );
+
+
             bundles.Add(new ScriptBundle("~/bundles/app")
                     .Include("~/Scripts/app.js")
                     );

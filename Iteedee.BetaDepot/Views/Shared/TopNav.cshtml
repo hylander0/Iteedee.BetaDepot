@@ -2,16 +2,57 @@
 @using Iteedee.BetaDepot.Common
 @using MvcSiteMapProvider.Web.Html
 
+@functions{
+    public static bool IsNavItemEnabled (string controller, string action)
+    {
+        var routes = HttpContext.Current.Request.RequestContext.RouteData.Values;
+        if (routes["controller"] != null && routes["controller"].ToString().ToUpper() == controller.ToUpper())
+        {
+            if(string.IsNullOrEmpty(action))
+                return true;
+            else if(routes["action"].ToString().ToUpper() == action.ToUpper())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static bool IsNavItemEnabled(string controller, string action, string id)
+    {
+
+        var routes = HttpContext.Current.Request.RequestContext.RouteData.Values;
+
+
+        if (routes["id"] != null && routes["id"].ToString().ToUpper() == id.ToUpper())
+        {
+            return true;
+        }
+        else if (routes["platform"] != null && routes["platform"].ToString().ToUpper() == id.ToUpper())
+            return true;
+        return false;
+    }
+}
 <ul class="nav navbar-nav">
-    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-    <li>@Html.ActionLink("iOS", "Index", "Platform", new { id = Constants.BUILD_PLATFORM_IOS }, null)</li>
-    <li>@Html.ActionLink("Android", "Index", "Platform", new { id = Constants.BUILD_PLATFORM_ANDROID }, null)</li>
+    <li class="@(IsNavItemEnabled("Home", "Index") ? "active" : "")">
+        @Html.ActionLink("Home", "Index", "Home")
+    </li>
+    <li class="@(IsNavItemEnabled("Platform", "", Constants.BUILD_PLATFORM_IOS) ? "active" : "")">
+        @Html.ActionLink("iOS", "Index", "Platform", new { id = Constants.BUILD_PLATFORM_IOS }, null)
+    </li>
+    <li class="@(IsNavItemEnabled("Platform", "", Constants.BUILD_PLATFORM_ANDROID) ? "active" : "")">
+        @Html.ActionLink("Android", "Index", "Platform", new { id = Constants.BUILD_PLATFORM_ANDROID }, null)
+    </li>
     @if (Model.IsInSystemRole)
     {
-        <li>@Html.ActionLink("Admin", "Index", "Administration")</li>
+        <li class="@(IsNavItemEnabled("Administration", "") ? "active" : "")">
+            @Html.ActionLink("Admin", "Index", "Administration")
+        </li>
     }
 
-    <li>@Html.ActionLink("About", "About", "Home")</li>
+    <li class="@(IsNavItemEnabled("Home","About") ? "active" : "")">
+        @Html.ActionLink("About", "About", "Home")
+    </li>
 </ul>
 
 

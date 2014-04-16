@@ -24,6 +24,7 @@ namespace Iteedee.BetaDepot.Models
             public string AppIconUrl { get; set; }
             public string Platform { get; set; }
             public string InstallUrl { get; set; }
+            public int BuildId { get; set; }
             public string BuildNotes { get; set; }
             public string VersionNumber { get; set; }
             public string UploadedByName { get; set; }

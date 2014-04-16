@@ -55,6 +55,7 @@ namespace Iteedee.BetaDepot.Controllers
                                  UploadedByName = String.Format("{0} {1}", b.AddedBy.FirstName, b.AddedBy.LastName),
                                  UploadedDtm = Common.Functions.GetPrettyDate(b.AddedDtm.ToLocalTime(), "MM/dd/yy"),
                                  BuildNotes = b.Notes,
+                                 BuildId = b.Id,
                                  VersionNumber = b.versionNumber
                              });     
                          }

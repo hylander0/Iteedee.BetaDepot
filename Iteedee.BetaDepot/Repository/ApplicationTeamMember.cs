@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace Iteedee.BetaDepot.Repository
         public virtual TeamMember TeamMember { get; set; }
 
         public String MemberRole { get; set; }
+        [DefaultValue(true)]
         public bool ReceiveBuildNotifications { get; set; }
 
     }

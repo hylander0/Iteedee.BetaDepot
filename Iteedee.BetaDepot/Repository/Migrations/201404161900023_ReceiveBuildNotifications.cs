@@ -7,7 +7,7 @@ namespace Iteedee.BetaDepot.Repository.Migrations
     {
         public override void Up()
         {
-            AddColumn("dbo.ApplicationTeamMembers", "ReceiveBuildNotifications", c => c.Boolean(nullable: false));
+            AddColumn("dbo.ApplicationTeamMembers", "ReceiveBuildNotifications", c => c.Boolean(nullable: false, defaultValue:true));
         }
         
         public override void Down()
